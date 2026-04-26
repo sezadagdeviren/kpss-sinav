@@ -133,4 +133,10 @@ app.get('/api/mistakes-by-year/:category', async (req, res) => {
   res.json(rows);
 });
 
+app.get('/api/favorites-by-year/:category', async (req, res) => {
+  const { category } = req.params;
+  const [rows] = await pool.query(`SELECT q.yil, COUNT(*) as count FROM user_activity ua JOIN questions q ON q.id = ua.question_id WHERE q.kategori = ? AND ua.is_favorite = 1 GROUP BY q.yil`, [category]);
+  res.json(rows);
+});
+
 app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));

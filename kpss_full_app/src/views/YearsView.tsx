@@ -2,14 +2,23 @@ import { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { BackButton } from '../components/common/BackButton';
+import { SelectionYearCard } from '../components/SelectionComponents';
 
-export default function YearsView() {
+interface YearsViewProps {
+  mode?: 'exam' | 'mistakes' | 'favorites';
+}
+
+export default function YearsView({ mode }: YearsViewProps) {
   const { category } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const isHataMerkezi = location.pathname.includes('/hata-merkezi');
   
-  const [mistakesPerYear, setMistakesPerYear] = useState<Record<string, number>>({});
+  // Backward compatibility or direct route check
+  const actualMode = mode || (location.pathname.includes('/hata-merkezi') ? 'mistakes' : 'exam');
+  const isHataMerkezi = actualMode === 'mistakes';
+  const isFavorites = actualMode === 'favorites';
+  
+  const [countsPerYear, setCountsPerYear] = useState<Record<string, number>>({});
   const [examSummaries, setExamSummaries] = useState<any[]>([]);
 
   useEffect(() => {
@@ -17,81 +26,51 @@ export default function YearsView() {
       if (isHataMerkezi) {
         api.fetchMistakesByYear(category).then(data => {
           const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [curr.yil]: curr.count }), {});
-          setMistakesPerYear(mapping);
+          setCountsPerYear(mapping);
+        });
+      } else if (isFavorites) {
+        api.fetchFavoritesByYear(category).then(data => {
+          const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [curr.yil]: curr.count }), {});
+          setCountsPerYear(mapping);
         });
       } else {
         api.fetchExamSummaries(category).then(setExamSummaries);
       }
     }
-  }, [category, isHataMerkezi]);
+  }, [category, actualMode]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  const getTargetUrl = (year: string) => {
+    if (isHataMerkezi) return `/hata-merkezi/${category}/${year}`;
+    if (isFavorites) return `/favorilerim/${category}/${year}`;
+    return `/ders/${category}/${year}`;
   };
 
   return (
     <div className="view-container">
-      <BackButton label={isHataMerkezi ? "Hata Merkezi" : "Kategoriler"} />
+      <BackButton label={isHataMerkezi ? "Hata Merkezi" : isFavorites ? "Favorilerim" : "Kategoriler"} />
       
       <div className="max-w-[1000px] mx-auto space-y-12 fade-in">
         <header className="text-center border-b border-white/5 pb-10">
           <h1 className="text-6xl font-black tracking-tighter">{category}</h1>
           <p className="text-slate-500 mt-2 font-bold tracking-widest uppercase text-xs">
-            {isHataMerkezi ? 'Hatalı Soruların Bulunduğu Yılı Seçin' : 'Sınav Yılını Seçin'}
+            {isHataMerkezi ? 'Hatalı Soruların Bulunduğu Yılı Seçin' : isFavorites ? 'Favori Soruların Bulunduğu Yılı Seçin' : 'Sınav Yılını Seçin'}
           </p>
         </header>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.from({ length: 20 }, (_, i) => (2025 - i).toString()).map(y => {
-            const mCount = mistakesPerYear[y] || 0;
+            const count = countsPerYear[y];
             const summary = examSummaries.find(s => s.yil === y);
 
             return (
-              <button 
-                key={y} 
-                onClick={() => navigate(isHataMerkezi ? `/hata-merkezi/${category}/${y}` : `/ders/${category}/${y}`)} 
-                className="glass-card relative p-12 rounded-[2.5rem] text-3xl font-black hover:bg-white/5 hover:border-indigo-500/20 transition-all group overflow-hidden"
-              >
-                {y}
-
-                {/* TOP LEFT: LAST TIME */}
-                {summary && !isHataMerkezi && (
-                   <div className="absolute top-4 left-6 flex flex-col items-start opacity-60">
-                      <span className="text-[8px] font-black text-indigo-400 uppercase tracking-widest">Süre</span>
-                      <span className="text-[11px] font-black text-white leading-none">{formatTime(summary.last_time)}</span>
-                   </div>
-                )}
-
-                {/* TOP RIGHT: LAST STATS */}
-                {summary && !isHataMerkezi && (
-                  <div className="absolute top-4 right-6 flex items-center gap-1.5 opacity-80">
-                    <div className="flex flex-col items-center">
-                      <span className="text-[7px] font-black text-emerald-500">D</span>
-                      <span className="text-[10px] font-black text-white leading-none">{summary.last_correct}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <span className="text-[7px] font-black text-rose-500">Y</span>
-                      <span className="text-[10px] font-black text-white leading-none">{summary.last_wrong}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <span className="text-[7px] font-black text-slate-500">B</span>
-                      <span className="text-[10px] font-black text-white leading-none">{summary.last_empty}</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* HATA MERKEZİ BADGE */}
-                {isHataMerkezi && (
-                  <div className={`absolute -top-1 -right-1 w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-black shadow-2xl border-2 border-slate-950 transition-transform group-hover:scale-110 ${mCount > 0 ? 'bg-rose-500 text-white animate-pulse' : 'bg-slate-800 text-slate-500'}`}>
-                    {mCount}
-                  </div>
-                )}
-
-                {/* Hover Background Hint */}
-                <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/[0.02] transition-colors pointer-events-none"></div>
-              </button>
+              <SelectionYearCard 
+                key={y}
+                year={y}
+                onClick={() => navigate(getTargetUrl(y))}
+                count={isHataMerkezi || isFavorites ? (count || 0) : undefined}
+                countColor={isFavorites ? 'amber' : 'rose'}
+                summary={actualMode === 'exam' ? summary : undefined}
+              />
             );
           })}
         </div>

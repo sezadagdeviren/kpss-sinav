@@ -14,12 +14,14 @@ export default function App() {
         <Route path="/ders/:category/:year" element={<QuizView />} />
 
         {/* Hata Merkezi Akışı */}
-        <Route path="/hata-merkezi" element={<ReviewCategoryView />} />
-        <Route path="/hata-merkezi/:category" element={<YearsView />} />
+        <Route path="/hata-merkezi" element={<ReviewCategoryView mode="mistakes" />} />
+        <Route path="/hata-merkezi/:category" element={<YearsView mode="mistakes" />} />
         <Route path="/hata-merkezi/:category/:year" element={<QuizView />} />
 
-        {/* Favoriler (Opsiyonel: Benzer mantıkla genişletilebilir) */}
-        <Route path="/favorilerim" element={<QuizView />} /> 
+        {/* Favoriler Akışı */}
+        <Route path="/favorilerim" element={<ReviewCategoryView mode="favorites" />} />
+        <Route path="/favorilerim/:category" element={<YearsView mode="favorites" />} />
+        <Route path="/favorilerim/:category/:year" element={<QuizView />} />
       </Routes>
     </Router>
   );

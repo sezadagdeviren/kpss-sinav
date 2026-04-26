@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import type { Stats } from '../types';
+import { SelectionCategoryCard } from '../components/SelectionComponents';
 
 export default function HomeView() {
   const navigate = useNavigate();
@@ -42,7 +43,12 @@ export default function HomeView() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map(cat => (
-            <CategoryCard key={cat} name={cat} onClick={() => navigate(`/ders/${cat}`)} />
+            <SelectionCategoryCard 
+              key={cat} 
+              name={cat} 
+              onClick={() => navigate(`/ders/${cat}`)} 
+              iconColor="indigo"
+            />
           ))}
         </div>
       </div>
@@ -62,18 +68,6 @@ function QuickCard({ title, desc, count, color, onClick }: any) {
         <p className="text-slate-500 text-sm font-medium mt-1">{desc}</p>
       </div>
       <div className="text-5xl font-black opacity-30 group-hover:opacity-60 transition-opacity">{count || 0}</div>
-    </button>
-  );
-}
-
-function CategoryCard({ name, onClick }: any) {
-  return (
-    <button onClick={onClick} className="glass-card group p-8 rounded-[2rem] text-left hover:scale-[1.02] transition-all duration-300">
-      <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-6 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all font-black text-xl shadow-lg">
-        {name[0]}
-      </div>
-      <h2 className="text-2xl font-black">{name}</h2>
-      <p className="text-slate-500 text-[10px] mt-2 font-black uppercase tracking-widest">Çıkmış Sorular</p>
     </button>
   );
 }

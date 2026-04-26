@@ -83,6 +83,12 @@ export const api = {
     if (!res.ok) throw new Error('Mistakes per year fetch failed');
     return res.json();
   },
+  
+  fetchFavoritesByYear: async (category: string): Promise<{ yil: string, count: number }[]> => {
+    const res = await fetch(`${API_BASE}/api/favorites-by-year/${encodeURIComponent(category)}`);
+    if (!res.ok) throw new Error('Favorites per year fetch failed');
+    return res.json();
+  },
 
   getImageUrl: (path: string) => `${API_BASE}/images/${path}`
 };
