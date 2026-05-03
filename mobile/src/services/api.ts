@@ -4,7 +4,7 @@ import type { Question, Stats } from '../types';
 // Android Emulator: 10.0.2.2
 // iOS Simulator: localhost
 // Gerçek Cihaz: Bilgisayarınızın yerel IP adresi (örn: 192.168.1.50)
-const YOUR_IP = '192.168.1.100'; // Kendi IP adresinizle degistirin
+const YOUR_IP = '192.168.1.103'; // Kendi IP adresinizle degistirin
 const API_BASE = `http://${YOUR_IP}:3001`;
 
 const client = axios.create({

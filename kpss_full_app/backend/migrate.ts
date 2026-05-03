@@ -29,9 +29,23 @@ async function migrate() {
         question_id INT NOT NULL,
         status ENUM('correct', 'wrong', 'empty') DEFAULT 'empty',
         is_favorite BOOLEAN DEFAULT FALSE,
+        is_in_mistake_pool BOOLEAN DEFAULT FALSE,
+        user_choice VARCHAR(10) DEFAULT NULL,
         last_answered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         UNIQUE KEY unique_user_question (question_id),
         FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
+      ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+    `);
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS user_exam_summaries (
+        kategori VARCHAR(50),
+        yil YEAR,
+        last_time INT,
+        last_correct INT,
+        last_wrong INT,
+        last_empty INT,
+        PRIMARY KEY (kategori, yil)
       ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
     `);
 

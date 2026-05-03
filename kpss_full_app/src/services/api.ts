@@ -1,6 +1,6 @@
 import type { Question, Stats } from '../types';
 
-const API_BASE = 'http://localhost:3001';
+const API_BASE = 'http://192.168.1.103:3001';
 
 export const api = {
   fetchCategories: async (): Promise<string[]> => {
