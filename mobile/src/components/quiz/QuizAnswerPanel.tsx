@@ -14,26 +14,28 @@ export function QuizAnswerPanel({
   currentQuestion, selectedAnswer, isAnswered, onAnswer, isDrawingMode
 }: QuizAnswerPanelProps) {
   return (
-    <View className="mb-4">
-      <Text className="text-xs font-black text-slate-900 mb-3 uppercase text-center">--- CEVAP PANELİ ---</Text>
-      <View className="flex-row justify-between" style={{ gap: 8 }}>
+    <View className="mb-2">
+      <View className="flex-row justify-between" style={{ gap: 6 }}>
         {['A', 'B', 'C', 'D', 'E'].map((choice) => {
           const isCorrect = choice === currentQuestion?.dogru_cevap;
           const myChoice = selectedAnswer || currentQuestion?.user_choice;
           
-          let btn = "flex-1 h-16 bg-white border border-slate-200 rounded-2xl items-center justify-center shadow-sm";
-          let txt = "text-2xl font-black text-slate-400";
+          let btn = "flex-1 h-12 bg-white border border-slate-200 rounded-xl items-center justify-center";
+          let txt = "text-xl font-black text-slate-300";
           
           if (isAnswered) {
             if (isCorrect) { 
-              btn = "flex-1 h-16 bg-emerald-500 rounded-2xl items-center justify-center"; 
-              txt = "text-2xl font-black text-white"; 
+              btn = "flex-1 h-12 bg-emerald-500 rounded-xl items-center justify-center"; 
+              txt = "text-xl font-black text-white"; 
             } else if (myChoice === choice) { 
-              btn = "flex-1 h-16 bg-rose-500 rounded-2xl items-center justify-center"; 
-              txt = "text-2xl font-black text-white"; 
+              btn = "flex-1 h-12 bg-rose-500 rounded-xl items-center justify-center"; 
+              txt = "text-xl font-black text-white"; 
             } else {
-              btn = "flex-1 h-16 bg-slate-50 opacity-10 items-center justify-center";
+              btn = "flex-1 h-12 bg-slate-50 opacity-20 items-center justify-center";
             }
+          } else if (myChoice === choice) {
+             btn = "flex-1 h-12 bg-indigo-500 border-indigo-400 rounded-xl items-center justify-center";
+             txt = "text-xl font-black text-white";
           }
           
           return (
@@ -42,6 +44,7 @@ export function QuizAnswerPanel({
               onPress={() => onAnswer(choice)} 
               disabled={isAnswered || isDrawingMode} 
               className={btn}
+              activeOpacity={0.7}
             >
               <Text className={txt}>{choice}</Text>
             </TouchableOpacity>

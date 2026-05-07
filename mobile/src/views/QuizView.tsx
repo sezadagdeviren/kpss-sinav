@@ -15,12 +15,15 @@ import { QuestionGrid } from '../components/quiz/QuestionGrid';
 const { width } = Dimensions.get('window');
 
 export default function QuizView({ route, navigation }: any) {
-  const { category, year } = route.params;
+  const { category, year, mode = 'exam' } = route.params;
   
   const {
     questions, currentIdx, currentQuestion, loading, selectedAnswer,
-    handleAnswer, toggleFavorite, nextQuestion, prevQuestion, jumpToQuestion
-  } = useQuiz({ category, year });
+    handleAnswer, toggleFavorite, removeMistake, nextQuestion, prevQuestion, jumpToQuestion
+  } = useQuiz({ category, year, mode });
+
+  const isReview = mode === 'wrong';
+  const isFavoritesMode = mode === 'favorites';
 
   const { timer, setIsActive } = useTimer(true);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
@@ -76,18 +79,14 @@ export default function QuizView({ route, navigation }: any) {
         />
 
         <ScrollView className="flex-1" scrollEnabled={!isDrawingMode} showsVerticalScrollIndicator={false}>
-          <View className="p-5">
-            <View className="bg-slate-900 p-4 rounded-3xl mb-6 shadow-xl border border-slate-700">
-               <View className="space-y-1">
-                  <Text className="text-xs font-bold text-white uppercase">SINAV YILI: <Text className="text-indigo-400">{year}</Text></Text>
-                  <Text className="text-xs font-bold text-white uppercase">KONU: <Text className="text-indigo-400">{category}</Text></Text>
-                  <Text className="text-xs font-bold text-white uppercase">SORU NO: <Text className="text-indigo-400">{currentIdx + 1}</Text></Text>
-               </View>
+          <View className="p-3">
+            <View className="bg-slate-900 px-4 py-2 rounded-2xl mb-4 border border-slate-700 flex-row justify-between items-center">
+              <Text className="text-[10px] font-black text-white uppercase">{category} <Text className="text-indigo-400">({year})</Text></Text>
+              <Text className="text-[10px] font-black text-indigo-400 uppercase">SORU: {currentIdx + 1}</Text>
             </View>
 
-            <View className="w-full bg-white rounded-3xl mb-6 items-center">
-               <Text className="text-[9px] font-black text-slate-300 mb-2 self-end">KPSS HUB ENGINE v1.0</Text>
-               <Image source={{ uri: api.getImageUrl(currentQuestion?.soru_resmi) }} style={{ width: width - 40, height: 400 }} resizeMode="contain" />
+            <View className="w-full bg-white rounded-2xl mb-4 items-center">
+               <Image source={{ uri: api.getImageUrl(currentQuestion?.soru_resmi) }} style={{ width: width - 24, height: 320 }} resizeMode="contain" />
             </View>
 
             <QuizAnswerPanel 
@@ -95,15 +94,31 @@ export default function QuizView({ route, navigation }: any) {
               isAnswered={isAnswered} onAnswer={handleAnswer} isDrawingMode={isDrawingMode}
             />
 
-            <View className="flex-row mb-8 mt-4" style={{ gap: 12 }}>
-              <TouchableOpacity onPress={prevQuestion} disabled={currentIdx === 0 || isDrawingMode} className={`flex-1 h-16 bg-slate-100 rounded-2xl items-center justify-center ${currentIdx === 0 ? 'opacity-0' : ''}`}><Text className="text-slate-600 font-bold">← Geri</Text></TouchableOpacity>
-              <TouchableOpacity onPress={nextQuestion} disabled={currentIdx >= questions.length - 1 || isDrawingMode} className="flex-[2] h-16 bg-slate-900 rounded-2xl items-center justify-center"><Text className="text-white font-bold">Sonraki Soru →</Text></TouchableOpacity>
+            <View className="flex-row mb-6 mt-2" style={{ gap: 10 }}>
+              <TouchableOpacity onPress={prevQuestion} disabled={currentIdx === 0 || isDrawingMode} className={`flex-1 h-12 bg-slate-100 rounded-xl items-center justify-center ${currentIdx === 0 ? 'opacity-0' : ''}`}><Text className="text-slate-600 font-bold text-xs">← Geri</Text></TouchableOpacity>
+              <TouchableOpacity onPress={nextQuestion} disabled={currentIdx >= questions.length - 1 || isDrawingMode} className="flex-[2] h-12 bg-slate-900 rounded-xl items-center justify-center"><Text className="text-white font-bold text-xs">Sonraki Soru →</Text></TouchableOpacity>
             </View>
 
             <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-4 rounded-2xl border border-slate-100 mb-6 bg-slate-50">
                <Icon name={currentQuestion?.is_favorite ? "star" : "star-outline"} size={20} color={currentQuestion?.is_favorite ? "#f59e0b" : "#94a3b8"} />
                <Text className={`font-black ml-2 text-xs uppercase ${currentQuestion?.is_favorite ? 'text-amber-500' : 'text-slate-400'}`}>{currentQuestion?.is_favorite ? '★ FAVORİ' : '☆ FAVORİ'}</Text>
             </TouchableOpacity>
+
+            {isReview && currentQuestion && (
+              <TouchableOpacity 
+                onPress={async () => {
+                  const isEmpty = await removeMistake();
+                  if (isEmpty) {
+                    Alert.alert('Tebrikler', 'Tüm hataları temizlediniz!');
+                    navigation.goBack();
+                  }
+                }} 
+                className="py-4 rounded-2xl border border-rose-100 bg-rose-50 mb-6 flex-row justify-center items-center"
+              >
+                <Icon name="delete-outline" size={20} color="#f43f5e" />
+                <Text className="text-rose-500 font-black ml-2 text-xs uppercase">Hata Listesinden Sil</Text>
+              </TouchableOpacity>
+            )}
 
             {isAnswered && (
               <View className="bg-slate-50 p-6 rounded-3xl border border-slate-100 mb-6">

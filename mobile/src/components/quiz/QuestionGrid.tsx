@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import type { Question } from '../../types';
 
 interface QuestionGridProps {
@@ -10,35 +10,43 @@ interface QuestionGridProps {
 
 export function QuestionGrid({ questions, currentIdx, onJump }: QuestionGridProps) {
   return (
-    <View className="bg-white border-b border-slate-100 py-3">
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12 }}>
+    <View className="bg-slate-900 px-1 py-3 border-b border-white/10">
+      <View className="flex-row flex-wrap justify-center items-center">
         {questions.map((q, idx) => {
           const isCurrent = idx === currentIdx;
-          const isAnswered = q.status && q.status !== 'empty';
-
-          let btnClass = "w-10 h-10 rounded-xl items-center justify-center border mx-1";
-          let txtClass = "font-black text-xs";
-
-          if (isAnswered) {
-            btnClass += " bg-indigo-50 border-indigo-100";
-            txtClass += " text-indigo-600";
-          } else {
-            btnClass += " bg-slate-50 border-slate-100";
-            txtClass += " text-slate-400";
-          }
+          const isCorrect = q.status === 'correct';
+          const isWrong = q.status === 'wrong';
+          
+          let btnClass = "w-6 h-6 rounded-md items-center justify-center m-0.5 border";
+          let txtClass = "font-black text-[8px]";
 
           if (isCurrent) {
-            btnClass = "w-10 h-10 rounded-xl items-center justify-center bg-indigo-600 border-transparent shadow-lg shadow-indigo-200";
-            txtClass = "font-black text-xs text-white";
+            btnClass += " bg-indigo-500 border-white scale-125 z-10 shadow-lg shadow-white/20";
+            txtClass += " text-white";
+          } else if (isCorrect) {
+            btnClass += " bg-emerald-500 border-emerald-400";
+            txtClass += " text-white";
+          } else if (isWrong) {
+            btnClass += " bg-rose-500 border-rose-400";
+            txtClass += " text-white";
+          } else {
+            // Answered but no status (shouldn't happen with our new logic) or Unanswered
+            btnClass += " bg-slate-800 border-slate-700";
+            txtClass += " text-slate-500";
           }
 
           return (
-            <TouchableOpacity key={idx} onPress={() => onJump(idx)} className={btnClass}>
+            <TouchableOpacity 
+              key={`${q.id}-${idx}`} 
+              onPress={() => onJump(idx)}
+              className={btnClass}
+              activeOpacity={0.7}
+            >
               <Text className={txtClass}>{idx + 1}</Text>
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
+      </View>
     </View>
   );
 }

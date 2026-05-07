@@ -7,18 +7,29 @@ interface UseQuizProps {
   year?: string;
   mode?: 'wrong' | 'favorites' | 'exam';
   initialIdx?: number;
+  initialQuestions?: Question[];
 }
 
-export function useQuiz({ category, year, mode = 'exam', initialIdx = 0 }: UseQuizProps) {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [currentIdx, setCurrentIdx] = useState(initialIdx);
-  const [loading, setLoading] = useState(true);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-
+export function useQuiz({ category, year, mode = 'exam', initialIdx = 0, initialQuestions }: UseQuizProps) {
   const isReview = mode === 'wrong';
   const isFavoritesMode = mode === 'favorites';
 
+  const [questions, setQuestions] = useState<Question[]>(() => {
+    if (initialQuestions && (isReview || isFavoritesMode)) {
+      return initialQuestions.map(q => ({ ...q, status: null, user_choice: null }));
+    }
+    return initialQuestions || [];
+  });
+  const [currentIdx, setCurrentIdx] = useState(initialIdx);
+  const [loading, setLoading] = useState(!initialQuestions);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+
   const loadQuestions = async () => {
+    if (initialQuestions && initialQuestions.length > 0) {
+      setLoading(false);
+      return;
+    }
+
     if (!category || !year) {
       if (!isFavoritesMode && !isReview) {
         setLoading(false);
@@ -37,6 +48,7 @@ export function useQuiz({ category, year, mode = 'exam', initialIdx = 0 }: UseQu
             String(q.yil).trim() === String(year).trim()
           );
         }
+        data = data.map(q => ({ ...q, status: null, user_choice: null }));
       } else if (isReview) {
         data = await api.fetchReview('wrong');
         if (category && year) {
@@ -45,6 +57,7 @@ export function useQuiz({ category, year, mode = 'exam', initialIdx = 0 }: UseQu
             String(q.yil).trim() === String(year).trim()
           );
         }
+        data = data.map(q => ({ ...q, status: null, user_choice: null }));
       } else {
         data = await api.fetchQuestions(category!, year!);
       }

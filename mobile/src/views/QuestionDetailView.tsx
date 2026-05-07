@@ -13,12 +13,12 @@ import { QuestionGrid } from '../components/quiz/QuestionGrid';
 const { width } = Dimensions.get('window');
 
 export default function QuestionDetailView({ route, navigation }: any) {
-  const { category, year, initialIdx, mode } = route.params;
+  const { category, year, initialIdx, mode, questions: initialQuestions } = route.params;
   
   const {
     questions, currentIdx, currentQuestion, loading, selectedAnswer,
     handleAnswer, toggleFavorite, removeMistake, nextQuestion, prevQuestion, jumpToQuestion
-  } = useQuiz({ category, year, mode, initialIdx });
+  } = useQuiz({ category, year, mode, initialIdx, initialQuestions });
 
   const [isDrawingMode, setIsDrawingMode] = useState(false);
   const isHataMerkezi = mode === 'wrong';
@@ -69,25 +69,16 @@ export default function QuestionDetailView({ route, navigation }: any) {
         />
 
         <ScrollView className="flex-1" scrollEnabled={!isDrawingMode} showsVerticalScrollIndicator={false}>
-          <View className="p-5">
+          <View className="p-3">
             {/* Meta Info */}
-            <View className="bg-slate-900 p-4 rounded-3xl mb-6 border border-slate-700">
-              <View className="flex-row justify-between mb-2">
-                <Text className="text-[10px] font-black text-slate-400 uppercase">Zorluk: <Text className="text-amber-400">{currentQuestion.zorluk_seviyesi || 'Orta'}</Text></Text>
-                <Text className="text-[10px] font-black text-slate-400 uppercase">{currentQuestion.kategori}</Text>
-              </View>
-              <View className="h-[1px] bg-slate-800 my-2" />
-              <View className="space-y-1">
-                <Text className="text-xs font-bold text-white uppercase">SINAV YILI: <Text className="text-indigo-400">{currentQuestion.yil}</Text></Text>
-                <Text className="text-xs font-bold text-white uppercase">KONU: <Text className="text-indigo-400">{currentQuestion.kategori}</Text></Text>
-                <Text className="text-xs font-bold text-white uppercase">SORU NO: <Text className="text-indigo-400">{currentQuestion.soru_no}</Text></Text>
-              </View>
+            <View className="bg-slate-900 px-4 py-2 rounded-2xl mb-4 border border-slate-700 flex-row justify-between items-center">
+              <Text className="text-[10px] font-black text-white uppercase">{currentQuestion.kategori} <Text className="text-indigo-400">({currentQuestion.yil})</Text></Text>
+              <Text className="text-[10px] font-black text-indigo-400 uppercase">SORU: {currentQuestion.soru_no}</Text>
             </View>
 
             {/* Question Image */}
-            <View className="w-full bg-white rounded-3xl mb-6 items-center shadow-sm">
-              <Text className="text-[9px] font-black text-slate-300 mb-2 self-end">KPSS HUB ENGINE v1.0</Text>
-              <Image source={{ uri: api.getImageUrl(currentQuestion.soru_resmi) }} style={{ width: width - 40, height: 400 }} resizeMode="contain" />
+            <View className="w-full bg-white rounded-2xl mb-4 items-center">
+               <Image source={{ uri: api.getImageUrl(currentQuestion.soru_resmi) }} style={{ width: width - 24, height: 320 }} resizeMode="contain" />
             </View>
 
             {/* Answer Panel (Shared Component) */}
@@ -97,36 +88,36 @@ export default function QuestionDetailView({ route, navigation }: any) {
             />
 
             {/* Navigation */}
-            <View className="flex-row mb-8 mt-4" style={{ gap: 12 }}>
+            <View className="flex-row mb-6 mt-2" style={{ gap: 10 }}>
               <TouchableOpacity
                 disabled={currentIdx === 0 || isDrawingMode}
                 onPress={prevQuestion}
-                className={`flex-1 h-16 bg-slate-100 rounded-2xl items-center justify-center ${currentIdx === 0 ? 'opacity-0' : ''}`}
+                className={`flex-1 h-12 bg-slate-100 rounded-xl items-center justify-center ${currentIdx === 0 ? 'opacity-0' : ''}`}
               >
-                <Text className="text-slate-600 font-bold">← Geri</Text>
+                <Text className="text-slate-600 font-bold text-xs">← Geri</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 disabled={isDrawingMode}
                 onPress={nextQuestion}
-                className="flex-[2] h-16 bg-slate-900 rounded-2xl items-center justify-center"
+                className="flex-[2] h-12 bg-slate-900 rounded-xl items-center justify-center"
               >
-                <Text className="text-white font-bold">Sonraki Soru →</Text>
+                <Text className="text-white font-bold text-xs">Sonraki Soru →</Text>
               </TouchableOpacity>
             </View>
 
             {/* Action Buttons */}
-            <View className="space-y-3 mb-8" style={{ gap: 12 }}>
-              <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-4 rounded-2xl border border-slate-100 bg-slate-50">
-                <Icon name={currentQuestion.is_favorite ? "star" : "star-outline"} size={22} color={currentQuestion.is_favorite ? "#f59e0b" : "#cbd5e1"} />
-                <Text className={`font-black ml-2 text-xs uppercase ${currentQuestion.is_favorite ? 'text-amber-600' : 'text-slate-400'}`}>
+            <View className="space-y-2 mb-6" style={{ gap: 8 }}>
+              <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-3 rounded-xl border border-slate-100 bg-slate-50">
+                <Icon name={currentQuestion.is_favorite ? "star" : "star-outline"} size={18} color={currentQuestion.is_favorite ? "#f59e0b" : "#cbd5e1"} />
+                <Text className={`font-black ml-2 text-[10px] uppercase ${currentQuestion.is_favorite ? 'text-amber-600' : 'text-slate-400'}`}>
                   {currentQuestion.is_favorite ? '★ FAVORİ' : '☆ FAVORİ'}
                 </Text>
               </TouchableOpacity>
 
               {isHataMerkezi && (
-                <TouchableOpacity onPress={handleRemove} className="flex-row justify-center items-center py-4 rounded-2xl border border-rose-100 bg-rose-50/30">
-                  <Icon name="trash-can-outline" size={18} color="#f43f5e" />
-                  <Text className="text-rose-500 font-black ml-2 text-xs uppercase">Hata Listesinden Sil</Text>
+                <TouchableOpacity onPress={handleRemove} className="flex-row justify-center items-center py-3 rounded-xl border border-rose-100 bg-rose-50/30">
+                  <Icon name="trash-can-outline" size={16} color="#f43f5e" />
+                  <Text className="text-rose-500 font-black ml-2 text-[10px] uppercase">Hata Listesinden Sil</Text>
                 </TouchableOpacity>
               )}
             </View>

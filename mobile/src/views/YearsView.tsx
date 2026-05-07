@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { api } from '../services/api';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -54,6 +54,27 @@ export default function YearsView({ route, navigation }: any) {
       <TouchableOpacity 
         className="bg-white p-7 rounded-[32px] mb-5 border border-slate-200 shadow-xl shadow-slate-200 relative overflow-hidden active:scale-95"
         onPress={() => navigation.navigate('Quiz', { category, year: item })}
+        onLongPress={() => {
+          Alert.alert(
+            'Sıfırla',
+            `${item} yılı verilerini sıfırlamak istiyor musunuz?`,
+            [
+              { text: 'İptal', style: 'cancel' },
+              { 
+                text: 'Sıfırla', 
+                style: 'destructive', 
+                onPress: async () => {
+                  try {
+                    await api.resetPool(category, item);
+                    loadData();
+                  } catch (err) {
+                    console.error('Reset error:', err);
+                  }
+                } 
+              }
+            ]
+          );
+        }}
       >
         <View className="flex-row justify-between items-center">
           <View>

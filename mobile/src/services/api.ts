@@ -25,8 +25,11 @@ export const api = {
     return res.data;
   },
 
-  fetchStats: async (category: string, year: string): Promise<Stats> => {
-    const res = await client.get(`/api/stats/${encodeURIComponent(category)}/${year}`);
+  fetchStats: async (category?: string, year?: string): Promise<Stats> => {
+    let url = '/api/stats';
+    if (category) url += `/${encodeURIComponent(category)}`;
+    if (year) url += `/${year}`;
+    const res = await client.get(url);
     return res.data;
   },
 
