@@ -75,23 +75,32 @@ app.get('/api/stats/:category?', async (req, res) => {
 });
 
 app.post('/api/reset', async (req, res) => {
-  const { category, year } = req.body;
+  const { category, kategori, year, yil } = req.body;
+  const finalCategory = category || kategori;
+  const finalYear = year || yil;
   await pool.query(`
     UPDATE user_activity ua
     JOIN questions q ON q.id = ua.question_id
     SET ua.status = 'empty', ua.user_choice = NULL
     WHERE q.kategori = ? AND q.yil = ?
-  `, [category, year]);
+  `, [finalCategory, finalYear]);
   
   // Also clear the exam summary on reset
-  await pool.query('DELETE FROM user_exam_summaries WHERE kategori = ? AND yil = ?', [category, year]);
+  await pool.query('DELETE FROM user_exam_summaries WHERE kategori = ? AND yil = ?', [finalCategory, finalYear]);
   
   res.json({ success: true });
 });
 
 /** EXAM SUMMARIES **/
 app.post('/api/exam-summary', async (req, res) => {
-  const { category, year, last_time, last_correct, last_wrong, last_empty } = req.body;
+  console.log('📝 Gelen Özet Verisi:', req.body);
+  const { category, kategori, year, yil, last_time, last_correct, last_wrong, last_empty } = req.body;
+  const finalCategory = category || kategori;
+  const finalYear = year || yil;
+  
+  if (!finalCategory || !finalYear) {
+    return res.status(400).json({ error: 'Kategori veya Yıl bilgisi eksik' });
+  }
   await pool.query(`
     INSERT INTO user_exam_summaries (kategori, yil, last_time, last_correct, last_wrong, last_empty)
     VALUES (?, ?, ?, ?, ?, ?)
@@ -100,7 +109,7 @@ app.post('/api/exam-summary', async (req, res) => {
       last_correct = VALUES(last_correct),
       last_wrong = VALUES(last_wrong),
       last_empty = VALUES(last_empty)
-  `, [category, year, last_time, last_correct, last_wrong, last_empty]);
+  `, [finalCategory, finalYear, last_time, last_correct, last_wrong, last_empty]);
   res.json({ success: true });
 });
 

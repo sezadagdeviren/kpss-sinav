@@ -1,38 +1,33 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/constants';
 import type { Question, Stats } from '../types';
 
-// Android Emulator: 10.0.2.2
-// iOS Simulator: localhost
-// Gerçek Cihaz: Bilgisayarınızın yerel IP adresi (örn: 192.168.1.50)
-const YOUR_IP = '192.168.1.103'; // Kendi IP adresinizle degistirin
-const API_BASE = `http://${YOUR_IP}:3001`;
+const API_BASE = API_CONFIG.BASE_URL;
 
 const client = axios.create({
   baseURL: API_BASE,
-  timeout: 5000,
+  timeout: API_CONFIG.TIMEOUT
 });
 
 export const api = {
   fetchCategories: async (): Promise<string[]> => {
-    const { data } = await client.get('/api/categories');
-    return data.map((c: any) => c.kategori);
+    const res = await client.get('/api/categories');
+    return res.data.map((c: any) => c.kategori);
   },
 
   fetchQuestions: async (category: string, year: string): Promise<Question[]> => {
-    const { data } = await client.get(`/api/questions/${encodeURIComponent(category)}/${year}`);
-    return data;
+    const res = await client.get(`/api/questions/${encodeURIComponent(category)}/${year}`);
+    return res.data;
   },
 
   fetchReview: async (type: 'wrong' | 'favorites'): Promise<Question[]> => {
-    const { data } = await client.get(`/api/review/${type}/all`);
-    return data;
+    const res = await client.get(`/api/review/${type}/all`);
+    return res.data;
   },
 
-  fetchStats: async (category?: string, year?: string): Promise<Stats> => {
-    let url = `/api/stats/${category || 'all'}`;
-    if (year) url += `?year=${year}`;
-    const { data } = await client.get(url);
-    return data;
+  fetchStats: async (category: string, year: string): Promise<Stats> => {
+    const res = await client.get(`/api/stats/${encodeURIComponent(category)}/${year}`);
+    return res.data;
   },
 
   fetchExamSummaries: async (category: string): Promise<any[]> => {
@@ -46,12 +41,7 @@ export const api = {
   },
 
   updateActivity: async (questionId: number, status?: string, isFavorite?: boolean, userChoice?: string) => {
-    const { data } = await client.post('/api/activity', {
-      question_id: questionId,
-      status,
-      is_favorite: isFavorite,
-      user_choice: userChoice
-    });
+    const { data } = await client.post('/api/activity', { question_id: questionId, status, is_favorite: isFavorite, user_choice: userChoice });
     return data;
   },
 
@@ -62,6 +52,11 @@ export const api = {
 
   saveExamSummary: async (summary: any) => {
     const { data } = await client.post('/api/exam-summary', summary);
+    return data;
+  },
+
+  removeMistakeFromPool: async (questionId: number) => {
+    const { data } = await client.post('/api/activity/mistake-remove', { question_id: questionId });
     return data;
   },
 

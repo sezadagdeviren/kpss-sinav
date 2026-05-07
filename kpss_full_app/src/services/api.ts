@@ -1,42 +1,40 @@
+import { API_CONFIG } from '../config/constants';
 import type { Question, Stats } from '../types';
 
-const API_BASE = 'http://192.168.1.103:3001';
+const API_BASE = API_CONFIG.BASE_URL;
+
+const handleResponse = async (res: Response) => {
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+  }
+  return res.json();
+};
 
 export const api = {
   fetchCategories: async (): Promise<string[]> => {
-    const res = await fetch(`${API_BASE}/api/categories`);
-    if (!res.ok) throw new Error('Categories fetch failed');
-    const data = await res.json();
+    const data = await fetch(`${API_BASE}/api/categories`).then(handleResponse);
     return data.map((c: any) => c.kategori);
   },
 
   fetchQuestions: async (category: string, year: string): Promise<Question[]> => {
-    const res = await fetch(`${API_BASE}/api/questions/${encodeURIComponent(category)}/${year}`);
-    if (!res.ok) throw new Error('Questions fetch failed');
-    return res.json();
+    return fetch(`${API_BASE}/api/questions/${encodeURIComponent(category)}/${year}`).then(handleResponse);
   },
 
   fetchReview: async (type: 'wrong' | 'favorites'): Promise<Question[]> => {
-    const res = await fetch(`${API_BASE}/api/review/${type}/all`);
-    if (!res.ok) throw new Error('Review fetch failed');
-    return res.json();
+    return fetch(`${API_BASE}/api/review/${type}/all`).then(handleResponse);
   },
 
-  fetchStats: async (category?: string, year?: string): Promise<Stats> => {
-    let url = `${API_BASE}/api/stats/${category || 'all'}`;
-    if (year) url += `?year=${year}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Stats fetch failed');
-    return res.json();
+  fetchStats: async (category: string, year: string): Promise<Stats> => {
+    return fetch(`${API_BASE}/api/stats/${encodeURIComponent(category)}/${year}`).then(handleResponse);
   },
 
-  updateActivity: async (questionId: number, status?: string, isFavorite?: boolean, userChoice?: string) => {
-    const res = await fetch(`${API_BASE}/api/activity`, {
+  updateActivity: async (questionId: number, status?: 'correct' | 'wrong' | 'empty', isFavorite?: boolean, userChoice?: string): Promise<any> => {
+    return fetch(`${API_BASE}/api/activity`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question_id: questionId, status, is_favorite: isFavorite, user_choice: userChoice })
-    });
-    return res.json();
+    }).then(handleResponse);
   },
 
   resetPool: async (category: string, year: string) => {
@@ -83,7 +81,7 @@ export const api = {
     if (!res.ok) throw new Error('Mistakes per year fetch failed');
     return res.json();
   },
-  
+
   fetchFavoritesByYear: async (category: string): Promise<{ yil: string, count: number }[]> => {
     const res = await fetch(`${API_BASE}/api/favorites-by-year/${encodeURIComponent(category)}`);
     if (!res.ok) throw new Error('Favorites per year fetch failed');

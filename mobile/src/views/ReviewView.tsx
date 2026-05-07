@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import type { Question } from '../types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useFocusEffect } from '@react-navigation/native';
+import { groupQuestions } from '../utils/quizUtils';
 
 const { width } = Dimensions.get('window');
 
@@ -35,15 +36,7 @@ export default function ReviewView({ route, navigation }: any) {
   );
 
   // Grouping logic
-  const groupedData = useMemo(() => {
-    const data: Record<string, Record<string, Question[]>> = {};
-    questions.forEach(q => {
-      if (!data[q.kategori]) data[q.kategori] = {};
-      if (!data[q.kategori][q.yil]) data[q.kategori][q.yil] = [];
-      data[q.kategori][q.yil].push(q);
-    });
-    return data;
-  }, [questions]);
+  const groupedData = useMemo(() => groupQuestions(questions), [questions]);
 
   const categories = useMemo(() => Object.keys(groupedData).sort(), [groupedData]);
   const years = useMemo(() => {

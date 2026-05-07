@@ -64,7 +64,22 @@ export default function App() {
               },
               tabBarActiveTintColor: '#6366f1',
               tabBarInactiveTintColor: 'gray',
-              tabBarStyle: { height: 60, paddingBottom: 10, paddingTop: 5 }
+              tabBarStyle: { 
+                paddingTop: 8,
+                height: 65, // Slightly increased for better reach
+                borderTopWidth: 0,
+                elevation: 10,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: -4 },
+                shadowOpacity: 0.05,
+                shadowRadius: 10,
+                backgroundColor: 'white'
+              },
+              tabBarLabelStyle: {
+                fontWeight: '900',
+                fontSize: 10,
+                marginBottom: 8
+              }
             })}
           >
             <Tab.Screen name="Ana Sayfa" component={MainStack} options={{ title: 'Sınavlar' }} />
