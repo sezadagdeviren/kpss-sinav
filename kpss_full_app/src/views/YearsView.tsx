@@ -23,18 +23,24 @@ export default function YearsView({ mode }: YearsViewProps) {
 
   useEffect(() => {
     if (category) {
+      console.log(`📡 Fetching data for category: ${category}, mode: ${actualMode}`);
       if (isHataMerkezi) {
         api.fetchMistakesByYear(category).then(data => {
-          const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [curr.yil]: curr.count }), {});
+          console.log('📝 Mistakes Data:', data);
+          const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [String(curr.yil)]: Number(curr.count) }), {});
           setCountsPerYear(mapping);
         });
       } else if (isFavorites) {
         api.fetchFavoritesByYear(category).then(data => {
-          const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [curr.yil]: curr.count }), {});
+          console.log('📝 Favorites Data:', data);
+          const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [String(curr.yil)]: Number(curr.count) }), {});
           setCountsPerYear(mapping);
         });
       } else {
-        api.fetchExamSummaries(category).then(setExamSummaries);
+        api.fetchExamSummaries(category).then(data => {
+          console.log('📝 Exam Summaries:', data);
+          setExamSummaries(data);
+        });
       }
     }
   }, [category, actualMode]);

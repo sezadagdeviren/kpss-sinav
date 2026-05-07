@@ -77,15 +77,23 @@ export const api = {
   },
 
   fetchMistakesByYear: async (category: string): Promise<{ yil: string, count: number }[]> => {
-    const res = await fetch(`${API_BASE}/api/mistakes-by-year/${encodeURIComponent(category)}`);
-    if (!res.ok) throw new Error('Mistakes per year fetch failed');
-    return res.json();
+    return fetch(`${API_BASE}/api/mistakes-by-year/${encodeURIComponent(category)}`).then(handleResponse);
   },
 
   fetchFavoritesByYear: async (category: string): Promise<{ yil: string, count: number }[]> => {
-    const res = await fetch(`${API_BASE}/api/favorites-by-year/${encodeURIComponent(category)}`);
-    if (!res.ok) throw new Error('Favorites per year fetch failed');
-    return res.json();
+    return fetch(`${API_BASE}/api/favorites-by-year/${encodeURIComponent(category)}`).then(handleResponse);
+  },
+
+  saveExamSummary: async (summary: any) => {
+    return fetch(`${API_BASE}/api/exam-summary`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(summary)
+    }).then(handleResponse);
+  },
+
+  fetchExamSummaries: async (category: string) => {
+    return fetch(`${API_BASE}/api/exam-summaries/${encodeURIComponent(category)}`).then(handleResponse);
   },
 
   getImageUrl: (path: string) => `${API_BASE}/images/${path}`

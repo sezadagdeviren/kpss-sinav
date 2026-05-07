@@ -138,13 +138,25 @@ app.get('/api/review/:type/:category?', async (req, res) => {
 
 app.get('/api/mistakes-by-year/:category', async (req, res) => {
   const { category } = req.params;
-  const [rows] = await pool.query(`SELECT q.yil, COUNT(*) as count FROM user_activity ua JOIN questions q ON q.id = ua.question_id WHERE q.kategori = ? AND ua.is_in_mistake_pool = 1 GROUP BY q.yil`, [category]);
+  const [rows] = await pool.query(`
+    SELECT q.yil, COUNT(*) as count 
+    FROM user_activity ua 
+    JOIN questions q ON q.id = ua.question_id 
+    WHERE LOWER(q.kategori) = LOWER(?) AND ua.is_in_mistake_pool = 1 
+    GROUP BY q.yil
+  `, [category]);
   res.json(rows);
 });
 
 app.get('/api/favorites-by-year/:category', async (req, res) => {
   const { category } = req.params;
-  const [rows] = await pool.query(`SELECT q.yil, COUNT(*) as count FROM user_activity ua JOIN questions q ON q.id = ua.question_id WHERE q.kategori = ? AND ua.is_favorite = 1 GROUP BY q.yil`, [category]);
+  const [rows] = await pool.query(`
+    SELECT q.yil, COUNT(*) as count 
+    FROM user_activity ua 
+    JOIN questions q ON q.id = ua.question_id 
+    WHERE LOWER(q.kategori) = LOWER(?) AND ua.is_favorite = 1 
+    GROUP BY q.yil
+  `, [category]);
   res.json(rows);
 });
 
