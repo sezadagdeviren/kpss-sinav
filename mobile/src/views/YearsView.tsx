@@ -85,7 +85,7 @@ export default function YearsView({ route, navigation }: any) {
           </View>
 
           {summary ? (
-            <View className="flex-row items-center" style={{ gap: 10 }}>
+            <View className="flex-row items-center gap-x-[10px]">
               <View className="items-center">
                 <Text className="text-[8px] font-black text-green-500">D</Text>
                 <Text className="text-base font-black text-slate-800">{summary.last_correct}</Text>

@@ -41,7 +41,7 @@ export default function QuestionDetailView({ route, navigation }: any) {
   const isAnswered = !!(selectedAnswer || (currentQuestion.status && currentQuestion.status !== 'empty'));
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <View className="flex-1 bg-white">
       <SafeAreaView className="flex-1">
         {/* Header Bar */}
         <View className="flex-row justify-between items-center px-4 py-3 bg-slate-900 shadow-md">
@@ -88,7 +88,7 @@ export default function QuestionDetailView({ route, navigation }: any) {
             />
 
             {/* Navigation */}
-            <View className="flex-row mb-6 mt-2" style={{ gap: 10 }}>
+            <View className="flex-row mb-6 mt-2 gap-x-[10px]">
               <TouchableOpacity
                 disabled={currentIdx === 0 || isDrawingMode}
                 onPress={prevQuestion}
@@ -106,7 +106,7 @@ export default function QuestionDetailView({ route, navigation }: any) {
             </View>
 
             {/* Action Buttons */}
-            <View className="space-y-2 mb-6" style={{ gap: 8 }}>
+            <View className="space-y-2 mb-6 gap-y-[8px]">
               <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-3 rounded-xl border border-slate-100 bg-slate-50">
                 <Icon name={currentQuestion.is_favorite ? "star" : "star-outline"} size={18} color={currentQuestion.is_favorite ? "#f59e0b" : "#cbd5e1"} />
                 <Text className={`font-black ml-2 text-[10px] uppercase ${currentQuestion.is_favorite ? 'text-amber-600' : 'text-slate-400'}`}>
@@ -137,8 +137,7 @@ export default function QuestionDetailView({ route, navigation }: any) {
       <View className="absolute bottom-10 right-6">
         <TouchableOpacity
           onPress={() => setIsDrawingMode(!isDrawingMode)}
-          className={`w-15 h-15 rounded-full items-center justify-center shadow-2xl ${isDrawingMode ? 'bg-black' : 'bg-white border-2 border-slate-900'}`}
-          style={{ width: 60, height: 60 }}
+          className={`w-[60px] h-[60px] rounded-full items-center justify-center shadow-2xl ${isDrawingMode ? 'bg-black' : 'bg-white border-2 border-slate-900'}`}
         >
           <Icon name={isDrawingMode ? "check-bold" : "pencil"} size={30} color={isDrawingMode ? "white" : "#000"} />
         </TouchableOpacity>

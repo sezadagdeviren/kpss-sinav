@@ -64,7 +64,7 @@ export default function QuizView({ route, navigation }: any) {
   const isAnswered = !!(selectedAnswer || (currentQuestion?.status && currentQuestion.status !== 'empty'));
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <View className="flex-1 bg-white">
       <SafeAreaView className="flex-1">
         <QuizHeader 
           onBack={() => navigation.goBack()} timer={timer} formatTime={formatTime}
@@ -94,7 +94,7 @@ export default function QuizView({ route, navigation }: any) {
               isAnswered={isAnswered} onAnswer={handleAnswer} isDrawingMode={isDrawingMode}
             />
 
-            <View className="flex-row mb-6 mt-2" style={{ gap: 10 }}>
+            <View className="flex-row mb-6 mt-2 gap-x-[10px]">
               <TouchableOpacity onPress={prevQuestion} disabled={currentIdx === 0 || isDrawingMode} className={`flex-1 h-12 bg-slate-100 rounded-xl items-center justify-center ${currentIdx === 0 ? 'opacity-0' : ''}`}><Text className="text-slate-600 font-bold text-xs">← Geri</Text></TouchableOpacity>
               <TouchableOpacity onPress={nextQuestion} disabled={currentIdx >= questions.length - 1 || isDrawingMode} className="flex-[2] h-12 bg-slate-900 rounded-xl items-center justify-center"><Text className="text-white font-bold text-xs">Sonraki Soru →</Text></TouchableOpacity>
             </View>
