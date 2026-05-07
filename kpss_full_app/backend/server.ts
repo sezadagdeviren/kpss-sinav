@@ -53,25 +53,31 @@ app.post('/api/activity', async (req, res) => {
   res.json({ success: true });
 });
 
-app.get('/api/stats/:category?', async (req, res) => {
-  const { category } = req.params;
-  const { year } = req.query;
+app.get('/api/stats/:category?/:year?', async (req, res) => {
+  const { category, year } = req.params;
   let query = `
     SELECT 
-      COUNT(CASE WHEN ua.status = 'correct' THEN 1 END) as correct_count,
-      COUNT(CASE WHEN ua.status = 'wrong' THEN 1 END) as wrong_count,
-      COUNT(CASE WHEN ua.is_in_mistake_pool = 1 THEN 1 END) as mistake_count,
-      COUNT(CASE WHEN ua.status = 'empty' OR ua.status IS NULL THEN 1 END) as empty_count,
-      COUNT(CASE WHEN ua.is_favorite = 1 THEN 1 END) as favorite_count
+      SUM(CASE WHEN ua.status = 'correct' THEN 1 ELSE 0 END) as correct_count,
+      SUM(CASE WHEN ua.status = 'wrong' THEN 1 ELSE 0 END) as wrong_count,
+      SUM(CASE WHEN ua.status = 'empty' OR ua.status IS NULL THEN 1 ELSE 0 END) as empty_count,
+      SUM(CASE WHEN ua.is_favorite = 1 THEN 1 ELSE 0 END) as favorite_count,
+      SUM(CASE WHEN ua.is_in_mistake_pool = 1 THEN 1 ELSE 0 END) as mistake_count
     FROM questions q
     LEFT JOIN user_activity ua ON q.id = ua.question_id
     WHERE 1=1
   `;
   const params = [];
-  if (category && category !== 'all') { query += ' AND q.kategori = ?'; params.push(category); }
-  if (year) { query += ' AND q.yil = ?'; params.push(year); }
-  const [rows]: any = await pool.query(query, params);
-  res.json(rows[0]);
+  if (category && category !== 'undefined' && category !== 'all') {
+    query += " AND q.kategori = ?";
+    params.push(category);
+  }
+  if (year && year !== 'undefined' && year !== 'all') {
+    query += " AND q.yil = ?";
+    params.push(year);
+  }
+
+  const [rows] = await pool.query(query, params);
+  res.json(rows[0] || { correct_count: 0, wrong_count: 0, empty_count: 0, favorite_count: 0, mistake_count: 0 });
 });
 
 app.post('/api/reset', async (req, res) => {

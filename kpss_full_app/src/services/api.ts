@@ -25,8 +25,11 @@ export const api = {
     return fetch(`${API_BASE}/api/review/${type}/all`).then(handleResponse);
   },
 
-  fetchStats: async (category: string, year: string): Promise<Stats> => {
-    return fetch(`${API_BASE}/api/stats/${encodeURIComponent(category)}/${year}`).then(handleResponse);
+  fetchStats: async (category?: string, year?: string): Promise<Stats> => {
+    let url = `${API_BASE}/api/stats`;
+    if (category) url += `/${encodeURIComponent(category)}`;
+    if (year) url += `/${year}`;
+    return fetch(url).then(handleResponse);
   },
 
   updateActivity: async (questionId: number, status?: 'correct' | 'wrong' | 'empty', isFavorite?: boolean, userChoice?: string): Promise<any> => {
@@ -38,42 +41,27 @@ export const api = {
   },
 
   resetPool: async (category: string, year: string) => {
-    const res = await fetch(`${API_BASE}/api/reset`, {
+    return fetch(`${API_BASE}/api/reset`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ category, year })
-    });
-    return res.json();
-  },
-
-  saveExamSummary: async (summary: any) => {
-    const res = await fetch(`${API_BASE}/api/exam-summary`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(summary)
-    });
-    return res.json();
-  },
-
-  fetchExamSummaries: async (category: string) => {
-    const res = await fetch(`${API_BASE}/api/exam-summaries/${category}`);
-    return res.json();
+    }).then(handleResponse);
   },
 
   resetSingle: async (questionId: number) => {
-    await fetch(`${API_BASE}/api/activity/reset`, {
+    return fetch(`${API_BASE}/api/activity/reset`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question_id: questionId })
-    });
+    }).then(handleResponse);
   },
 
   removeMistakeFromPool: async (questionId: number) => {
-    await fetch(`${API_BASE}/api/activity/mistake-remove`, {
+    return fetch(`${API_BASE}/api/activity/mistake-remove`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question_id: questionId })
-    });
+    }).then(handleResponse);
   },
 
   fetchMistakesByYear: async (category: string): Promise<{ yil: string, count: number }[]> => {
