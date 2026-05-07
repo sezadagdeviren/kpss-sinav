@@ -31,14 +31,24 @@ export function useQuiz({ category, year, mode = 'exam', initialIdx = 0 }: UseQu
       let data: Question[] = [];
       if (isFavoritesMode) {
         data = await api.fetchReview('favorites');
-        if (category && year) data = data.filter(q => q.kategori === category && q.yil.toString() === year);
+        if (category && year) {
+          data = data.filter(q => 
+            q.kategori?.toLowerCase().trim() === category.toLowerCase().trim() && 
+            String(q.yil).trim() === String(year).trim()
+          );
+        }
       } else if (isReview) {
         data = await api.fetchReview('wrong');
-        if (category && year) data = data.filter(q => q.kategori === category && q.yil.toString() === year);
+        if (category && year) {
+          data = data.filter(q => 
+            q.kategori?.toLowerCase().trim() === category.toLowerCase().trim() && 
+            String(q.yil).trim() === String(year).trim()
+          );
+        }
       } else {
         data = await api.fetchQuestions(category!, year!);
       }
-      console.log(`✅ ${data.length} soru yüklendi.`);
+      console.log(`🔍 [Mobile] Mod: ${mode} | Soru: ${data.length}`);
       setQuestions(data);
     } catch (err) {
       console.error('❌ Soru yükleme hatası:', err);

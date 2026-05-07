@@ -24,14 +24,28 @@ export function useQuiz({ category, year, isReview, isFavoritesMode }: UseQuizPr
       
       if (isFavoritesMode) {
         data = await api.fetchReview('favorites');
-        if (category && year) data = data.filter(q => q.kategori === category && String(q.yil) === year);
+        if (category && year) {
+          data = data.filter(q => 
+            q.kategori?.toLowerCase().trim() === category.toLowerCase().trim() && 
+            String(q.yil).trim() === String(year).trim()
+          );
+        }
       } else if (isReview) {
         const allReview = await api.fetchReview('wrong');
-        data = (category && year) ? allReview.filter(q => q.kategori === category && String(q.yil) === year) : allReview;
-        data = data.map(q => ({ ...q, status: null })); // Temiz başlangıç
+        if (category && year) {
+          data = allReview.filter(q => 
+            q.kategori?.toLowerCase().trim() === category.toLowerCase().trim() && 
+            String(q.yil).trim() === String(year).trim()
+          );
+        } else {
+          data = allReview;
+        }
+        data = data.map(q => ({ ...q, status: null }));
       } else if (category && year) {
         data = await api.fetchQuestions(category, year);
       }
+
+      console.log(`🔍 Quiz Modu: ${isReview ? 'Hata' : isFavoritesMode ? 'Favori' : 'Normal'} | Kategori: ${category} | Yıl: ${year} | Bulunan Soru: ${data.length}`);
 
       setQuestions(data);
       if (category && year) refreshStats();
