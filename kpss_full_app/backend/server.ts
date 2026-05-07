@@ -41,6 +41,7 @@ app.post('/api/activity', async (req, res) => {
     const { question_id, status, is_favorite, is_in_mistake_pool, user_choice } = req.body;
     let finalMistakePool = is_in_mistake_pool;
     if (status === 'wrong') finalMistakePool = 1;
+    if (status === 'correct') finalMistakePool = 0;
 
     const pStatus = status || null;
     const pFav = is_favorite !== undefined ? (is_favorite ? 1 : 0) : null;
@@ -165,6 +166,20 @@ app.get('/api/review/:type/:category?', async (req, res) => {
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: 'Gözden geçirme listesi yüklenemedi' });
+  }
+});
+
+app.post('/api/activity/mistake-remove', async (req, res) => {
+  try {
+    const { question_id } = req.body;
+    await pool.query(`
+      UPDATE user_activity 
+      SET is_in_mistake_pool = 0, status = 'empty', user_choice = NULL
+      WHERE question_id = ?
+    `, [question_id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Hata havuzundan silme başarısız' });
   }
 });
 
