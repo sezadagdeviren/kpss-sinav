@@ -21,7 +21,6 @@ export function AnswerPanel({
     <div className="flex-shrink-0 md:flex-1 flex flex-col w-full overflow-hidden">
       {/* Şık Butonları Alanı - Mobilde Yan Yana, Masaüstünde Alt Alta */}
       <div className="glass-card rounded-[1.5rem] md:rounded-[2.5rem] p-2 md:p-8 flex flex-col shadow-premium border-white/5 overflow-hidden transition-all duration-500">
-        <h3 className="hidden md:block text-[10px] font-black text-slate-500 tracking-[0.5em] text-center mb-8 uppercase opacity-40 italic">SEÇENEKLER</h3>
         <div className="grid grid-cols-5 md:grid-cols-1 gap-1 md:gap-3 flex-1 justify-center">
           {['A', 'B', 'C', 'D', 'E'].map(choice => {
             const isCorrect = choice === currentQuestion?.dogru_cevap;

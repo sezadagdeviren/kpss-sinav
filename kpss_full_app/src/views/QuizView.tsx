@@ -40,27 +40,32 @@ export default function QuizView() {
   }, [questions]);
 
   const [showSummary, setShowSummary] = useState(false);
+  const [finalResult, setFinalResult] = useState<{ stats: any, timer: number } | null>(null);
 
   const handleFinish = async () => {
     setIsActive(false);
-    console.log('🚀 Sınav Bitiriliyor...', { category, year, localStats });
+    
+    const resultToSave = {
+      stats: { ...localStats },
+      timer: timer
+    };
+    setFinalResult(resultToSave);
     
     try {
       await api.saveExamSummary({
         kategori: category, 
         yil: year, 
-        last_time: timer,
-        last_correct: localStats.correct_count, 
-        last_wrong: localStats.wrong_count, 
-        last_empty: localStats.empty_count
+        last_time: resultToSave.timer,
+        last_correct: resultToSave.stats.correct_count, 
+        last_wrong: resultToSave.stats.wrong_count, 
+        last_empty: resultToSave.stats.empty_count
       });
-      console.log('✅ Sınav başarıyla kaydedildi.');
       setShowSummary(true);
+      resetTimer();
     } catch (err) {
       console.error('❌ Sınav kaydedilirken hata oluştu:', err);
-      alert('Sınav kaydedilemedi, lütfen bağlantınızı kontrol edin.');
+      setShowSummary(true);
     }
-    resetTimer();
   };
 
   const resetProgress = async () => {
@@ -84,8 +89,11 @@ export default function QuizView() {
     <div className="h-screen w-full bg-slate-950 flex flex-col font-sans relative overflow-hidden">
       {showSummary && (
         <QuizSummary 
-          timer={timer} formatTime={formatTime} totalQuestions={questions.length} 
-          stats={localStats} onJumpToStart={() => { jumpToStart(); resetTimer(); setIsActive(true); setShowSummary(false); }} 
+          timer={finalResult?.timer || 0} 
+          formatTime={formatTime} 
+          totalQuestions={questions.length} 
+          stats={finalResult?.stats || localStats} 
+          onJumpToStart={() => { jumpToStart(); resetTimer(); setIsActive(true); setShowSummary(false); }} 
           onClose={() => setShowSummary(false)} 
         />
       )}
