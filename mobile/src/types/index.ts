@@ -5,6 +5,7 @@ export interface Question {
   dogru_cevap: string;
   kategori: string;
   konu: string;
+  alt_konu: string;
   zorluk_seviyesi: string;
   cozum: string;
   soru_resmi: string;

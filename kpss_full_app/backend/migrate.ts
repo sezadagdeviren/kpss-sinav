@@ -16,6 +16,7 @@ async function migrate() {
         dogru_cevap VARCHAR(10) NOT NULL,
         kategori VARCHAR(50) NOT NULL,
         konu VARCHAR(100),
+        alt_konu VARCHAR(150),
         zorluk_seviyesi VARCHAR(50),
         cozum TEXT,
         soru_resmi VARCHAR(255) NOT NULL,
@@ -73,11 +74,12 @@ async function migrate() {
         if (category === 'Anayasa') category = 'Vatandaşlık';
 
         await connection.query(`
-          INSERT INTO questions (yil, soru_no, dogru_cevap, kategori, konu, zorluk_seviyesi, cozum, soru_resmi)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO questions (yil, soru_no, dogru_cevap, kategori, konu, alt_konu, zorluk_seviyesi, cozum, soru_resmi)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
           ON DUPLICATE KEY UPDATE
             dogru_cevap = VALUES(dogru_cevap),
             konu = VALUES(konu),
+            alt_konu = VALUES(alt_konu),
             zorluk_seviyesi = VALUES(zorluk_seviyesi),
             cozum = VALUES(cozum),
             soru_resmi = VALUES(soru_resmi)
@@ -87,6 +89,7 @@ async function migrate() {
           item.dogru_cevap,
           category,
           item.konu || '',
+          item.alt_konu || '',
           item.zorluk_seviyesi || 'Orta',
           item.cozum || '',
           item.soru_resmi

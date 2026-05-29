@@ -10,6 +10,7 @@ import { AnswerPanel } from '../components/quiz/AnswerPanel';
 import { QuestionDisplay } from '../components/quiz/QuestionDisplay';
 import { QuizSummary } from '../components/quiz/QuizSummary';
 import { QuestionGrid } from '../components/quiz/QuestionGrid';
+import { SolutionPanel } from '../components/quiz/SolutionPanel';
 import { JumpToStartButton } from '../components/common/JumpToStartButton';
 
 export default function QuizView() {
@@ -104,45 +105,56 @@ export default function QuizView() {
         currentIdx={currentIdx} totalQuestions={questions.length} stats={localStats} shouldShowTimer={shouldShowTimer}
       />
 
-      <main className="flex-1 flex flex-col md:flex-row overflow-hidden">
-        <QuestionDisplay 
-          currentQuestion={currentQuestion} onJumpToStart={jumpToStart} 
-          onFinish={handleFinish} isFavoritesMode={isFavoritesMode} shouldShowTimer={shouldShowTimer}
-        />
+      <main className="flex-1 flex flex-col md:flex-row overflow-hidden gap-4 p-4">
+        {/* Sol Kolon: Soru Resmi (Geniş) */}
+        <div className="flex-[1.5] glass-card rounded-[2rem] overflow-hidden flex flex-col border-white/5">
+          <QuestionDisplay currentQuestion={currentQuestion} />
+        </div>
 
-        <div className="flex-[1.5] md:flex-[0.8] flex flex-col p-1 md:p-6 space-y-0.5 md:space-y-4 md:max-w-[500px] overflow-hidden h-full">
+        {/* Sağ Kolon: Kontroller, Şıklar ve Çözüm (Kaydırılabilir) */}
+        <div className="flex-[1] md:max-w-[450px] flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2 h-full">
           <QuestionGrid 
             questions={questions}
             currentIdx={currentIdx}
             onJump={jumpToQuestion}
           />
-          <AnswerPanel 
-            currentQuestion={currentQuestion} selectedAnswer={selectedAnswer} 
-            isQuestionSolved={isQuestionSolved} handleAnswer={handleAnswer}
-            isReview={isReview} isFavoritesMode={isFavoritesMode}
-          />
+          <div className="glass-card rounded-[1.5rem] p-4 flex flex-col shadow-premium border-white/5 flex-shrink-0">
+            <AnswerPanel 
+              currentQuestion={currentQuestion} selectedAnswer={selectedAnswer} 
+              isQuestionSolved={isQuestionSolved} handleAnswer={handleAnswer}
+              isReview={isReview} isFavoritesMode={isFavoritesMode}
+            />
+          </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <button onClick={toggleFavorite} className={`p-5 rounded-2xl border font-black text-[10px] transition-all flex items-center justify-center gap-2 tracking-widest ${currentQuestion?.is_favorite ? 'bg-amber-600 border-transparent text-white shadow-lg shadow-amber-500/20' : 'glass-card text-slate-500 hover:text-slate-200'}`}>
+          {/* Çözüm Paneli Şıkların Altında */}
+          <div className="glass-card rounded-[1.5rem] overflow-hidden flex flex-col border-white/5 flex-shrink-0 min-h-[250px]">
+            <SolutionPanel 
+              currentQuestion={currentQuestion} 
+              isQuestionSolved={isQuestionSolved} 
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 flex-shrink-0 mt-2">
+            <button onClick={toggleFavorite} className={`p-4 rounded-xl border font-black text-[10px] transition-all flex items-center justify-center gap-2 tracking-widest ${currentQuestion?.is_favorite ? 'bg-amber-600 border-transparent text-white shadow-lg shadow-amber-500/20' : 'glass-card text-slate-500 hover:text-slate-200'}`}>
               {currentQuestion?.is_favorite ? '★ FAVORİ' : '☆ FAVORİ'}
             </button>
             {!isReview && !isFavoritesMode ? (
-              <button onClick={handleFinish} className="p-5 rounded-2xl bg-indigo-600/5 border border-indigo-500/20 text-indigo-400 font-black text-[10px] tracking-[0.2em] uppercase hover:bg-indigo-500/10 transition-colors">SINAVI BİTİR</button>
+              <button onClick={handleFinish} className="p-4 rounded-xl bg-indigo-600/5 border border-indigo-500/20 text-indigo-400 font-black text-[10px] tracking-[0.2em] uppercase hover:bg-indigo-500/10 transition-colors">SINAVI BİTİR</button>
             ) : (
-              <JumpToStartButton onClick={jumpToStart} className="!p-5 !rounded-2xl" />
+              <JumpToStartButton onClick={jumpToStart} className="!p-4 !rounded-xl" />
             )}
             {isReview && currentQuestion && (
-              <button onClick={removeMistake} className="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 font-black text-[10px] uppercase tracking-widest hover:bg-rose-500/20 col-span-2 transition-colors">Hata Listesinden Sil</button>
+              <button onClick={removeMistake} className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 font-black text-[10px] uppercase tracking-widest hover:bg-rose-500/20 col-span-2 transition-colors">Hata Listesinden Sil</button>
             )}
           </div>
 
-          <div className="flex gap-3 h-16">
-            <button onClick={prevQuestion} className="flex-1 glass-card rounded-2xl font-black text-slate-500 hover:text-white disabled:opacity-5 transition-all flex items-center justify-center border-white/5" disabled={currentIdx === 0}>← Geri</button>
-            <button onClick={nextQuestion} className="flex-[1.5] bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-500/20 active:scale-95 transition-all flex items-center justify-center">Sonraki Soru →</button>
+          <div className="flex gap-3 h-14 flex-shrink-0 mt-2">
+            <button onClick={prevQuestion} className="flex-1 glass-card rounded-xl font-black text-slate-500 hover:text-white disabled:opacity-5 transition-all flex items-center justify-center border-white/5" disabled={currentIdx === 0}>← Geri</button>
+            <button onClick={nextQuestion} className="flex-[1.5] bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black shadow-lg shadow-indigo-500/20 active:scale-95 transition-all flex items-center justify-center">Sonraki Soru →</button>
           </div>
 
           {!isReview && !isFavoritesMode && (
-            <button onClick={resetProgress} className="text-[10px] text-rose-500/30 hover:text-rose-500 font-black uppercase tracking-[0.3em] underline transition-colors w-full text-center pb-2">Tüm İlerlemeyi Sıfırla</button>
+            <button onClick={resetProgress} className="text-[10px] text-rose-500/30 hover:text-rose-500 font-black uppercase tracking-[0.3em] underline transition-colors w-full text-center pb-6 pt-4 flex-shrink-0 mt-auto">Tüm İlerlemeyi Sıfırla</button>
           )}
         </div>
       </main>

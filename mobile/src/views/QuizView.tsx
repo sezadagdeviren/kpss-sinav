@@ -80,9 +80,25 @@ export default function QuizView({ route, navigation }: any) {
 
         <ScrollView className="flex-1" scrollEnabled={!isDrawingMode} showsVerticalScrollIndicator={false}>
           <View className="p-3">
-            <View className="bg-slate-900 px-4 py-2 rounded-2xl mb-4 border border-slate-700 flex-row justify-between items-center">
-              <Text className="text-[10px] font-black text-white uppercase">{category} <Text className="text-indigo-400">({year})</Text></Text>
-              <Text className="text-[10px] font-black text-indigo-400 uppercase">SORU: {currentIdx + 1}</Text>
+            <View className="bg-slate-900 px-4 py-2 rounded-2xl mb-2 border border-slate-700">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-[10px] font-black text-white uppercase">{category} <Text className="text-indigo-400">({year})</Text></Text>
+                <Text className="text-[10px] font-black text-indigo-400 uppercase">SORU: {currentIdx + 1}</Text>
+              </View>
+              {(currentQuestion?.konu || currentQuestion?.alt_konu) && (
+                <View className="flex-row flex-wrap gap-x-2 gap-y-1 mt-2">
+                  {currentQuestion?.konu ? (
+                    <View className="bg-white/10 px-3 py-1 rounded-full">
+                      <Text className="text-[9px] font-bold text-slate-300 uppercase">{currentQuestion.konu}</Text>
+                    </View>
+                  ) : null}
+                  {currentQuestion?.alt_konu ? (
+                    <View className="bg-violet-500/20 px-3 py-1 rounded-full border border-violet-500/20">
+                      <Text className="text-[9px] font-bold text-violet-300 uppercase">{currentQuestion.alt_konu}</Text>
+                    </View>
+                  ) : null}
+                </View>
+              )}
             </View>
 
             <View className="w-full bg-white rounded-2xl mb-4 items-center">
@@ -122,9 +138,46 @@ export default function QuizView({ route, navigation }: any) {
 
             {isAnswered && (
               <View className="bg-slate-50 p-6 rounded-3xl border border-slate-100 mb-6">
-                <Text className="text-[10px] font-bold text-slate-900 mb-2 uppercase">Çözüm Analizi</Text>
+                <View className="flex-row items-center justify-between mb-3">
+                  <Text className="text-[10px] font-bold text-slate-900 uppercase">📝 Çözüm Analizi</Text>
+                  {currentQuestion?.alt_konu ? (
+                    <View className="bg-violet-100 px-3 py-1 rounded-full">
+                      <Text className="text-[9px] font-bold text-violet-600 uppercase">{currentQuestion.alt_konu}</Text>
+                    </View>
+                  ) : null}
+                </View>
                 <Text className="text-sm text-slate-600 leading-6">{currentQuestion?.cozum || 'Çözüm henüz eklenmemiş.'}</Text>
               </View>
+            )}
+
+            {!isReview && !isFavoritesMode && (
+              <TouchableOpacity 
+                onPress={() => {
+                  Alert.alert(
+                    'İlerlemeyi Sıfırla',
+                    'Bu yıla ait çözdüğünüz tüm soruların ilerlemesi sıfırlanacak. Emin misiniz?',
+                    [
+                      { text: 'İptal', style: 'cancel' },
+                      { 
+                        text: 'Sıfırla', 
+                        style: 'destructive',
+                        onPress: async () => {
+                          try {
+                            await api.resetPool(category, year);
+                            Alert.alert('Başarılı', 'İlerleme sıfırlandı.');
+                            navigation.goBack();
+                          } catch (error) {
+                            Alert.alert('Hata', 'Sıfırlama işlemi başarısız oldu.');
+                          }
+                        }
+                      }
+                    ]
+                  );
+                }}
+                className="py-4 mt-2 mb-10 items-center"
+              >
+                <Text className="text-[10px] text-rose-500/80 font-black uppercase tracking-[0.2em] underline">Tüm İlerlemeyi Sıfırla</Text>
+              </TouchableOpacity>
             )}
           </View>
         </ScrollView>

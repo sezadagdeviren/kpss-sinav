@@ -103,6 +103,11 @@ export default function ReviewView({ route, navigation }: any) {
       <View className="flex-1">
         <Text className="text-xs font-black text-indigo-600 uppercase mb-1">{item.kategori} {item.yil}</Text>
         <Text className="text-sm font-bold text-slate-900" numberOfLines={1}>Soru {item.soru_no}</Text>
+        {(item.konu || item.alt_konu) && (
+          <Text className="text-[10px] text-slate-400 font-medium mt-1" numberOfLines={1}>
+            {item.konu}{item.alt_konu ? ` › ${item.alt_konu}` : ''}
+          </Text>
+        )}
       </View>
       <Icon name="chevron-right" size={20} color="#cbd5e1" />
     </TouchableOpacity>
