@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Views
@@ -47,45 +47,53 @@ function FavoriteStack() {
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+function AppNavigator() {
+  const insets = useSafeAreaInsets();
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ color, size }) => {
+          let iconName = 'home';
+          if (route.name === 'Ana Sayfa') iconName = 'home-variant';
+          else if (route.name === 'HatalarSekme') iconName = 'alert-circle';
+          else if (route.name === 'FavorilerSekme') iconName = 'star';
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#6366f1',
+        tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          paddingTop: 8,
+          height: 60 + insets.bottom,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
+          borderTopWidth: 0,
+          elevation: 10,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          backgroundColor: 'white'
+        },
+        tabBarLabelStyle: {
+          fontWeight: '900',
+          fontSize: 10,
+          marginBottom: insets.bottom > 0 ? 0 : 8
+        }
+      })}
+    >
+      <Tab.Screen name="Ana Sayfa" component={MainStack} options={{ title: 'Sınavlar' }} />
+      <Tab.Screen name="HatalarSekme" component={ReviewStack} options={{ title: 'Hatalar' }} />
+      <Tab.Screen name="FavorilerSekme" component={FavoriteStack} options={{ title: 'Favoriler' }} />
+    </Tab.Navigator>
+  );
+}
+
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              headerShown: false,
-              tabBarIcon: ({ color, size }) => {
-                let iconName = 'home';
-                if (route.name === 'Ana Sayfa') iconName = 'home-variant';
-                else if (route.name === 'HatalarSekme') iconName = 'alert-circle';
-                else if (route.name === 'FavorilerSekme') iconName = 'star';
-                return <Icon name={iconName} size={size} color={color} />;
-              },
-              tabBarActiveTintColor: '#6366f1',
-              tabBarInactiveTintColor: 'gray',
-              tabBarStyle: {
-                paddingTop: 8,
-                height: 65, // Slightly increased for better reach
-                borderTopWidth: 0,
-                elevation: 10,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: -4 },
-                shadowOpacity: 0.05,
-                shadowRadius: 10,
-                backgroundColor: 'white'
-              },
-              tabBarLabelStyle: {
-                fontWeight: '900',
-                fontSize: 10,
-                marginBottom: 8
-              }
-            })}
-          >
-            <Tab.Screen name="Ana Sayfa" component={MainStack} options={{ title: 'Sınavlar' }} />
-            <Tab.Screen name="HatalarSekme" component={ReviewStack} options={{ title: 'Hatalar' }} />
-            <Tab.Screen name="FavorilerSekme" component={FavoriteStack} options={{ title: 'Favoriler' }} />
-          </Tab.Navigator>
+          <AppNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
