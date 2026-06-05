@@ -22,7 +22,7 @@ export default function QuizView({ route, navigation }: any) {
     handleAnswer, toggleFavorite, nextQuestion, prevQuestion, jumpToQuestion
   } = useQuiz({ category, year });
 
-  const { timer, setIsActive } = useTimer(true);
+  const { timer, setIsActive, resetTimer } = useTimer(true);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
 
   const stats = useMemo(() => {
@@ -51,6 +51,16 @@ export default function QuizView({ route, navigation }: any) {
     } catch (err) {
       console.error('❌ Kayıt hatası:', err);
       Alert.alert('Hata', 'Sınav kaydedilemedi. İnternet bağlantınızı kontrol edin.');
+    }
+  };
+
+  const resetProgress = async () => {
+    try {
+      await api.resetPool(category, year);
+      resetTimer();
+    } catch (err) {
+      console.error('Reset error', err);
+      Alert.alert('Hata', 'İlerleme sıfırlanamadı.');
     }
   };
 
@@ -100,6 +110,9 @@ export default function QuizView({ route, navigation }: any) {
               <TouchableOpacity onPress={nextQuestion} disabled={currentIdx >= questions.length - 1 || isDrawingMode} className="flex-[2] h-16 bg-slate-900 rounded-2xl items-center justify-center"><Text className="text-white font-bold">Sonraki Soru →</Text></TouchableOpacity>
             </View>
 
+            <TouchableOpacity onPress={resetProgress} className="w-full py-2 bg-rose-500/10 rounded-lg mb-2">
+              <Text className="text-center text-rose-500 font-bold uppercase">Tüm İlerlemeyi Sıfırla</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-4 rounded-2xl border border-slate-100 mb-6 bg-slate-50">
                <Icon name={currentQuestion?.is_favorite ? "star" : "star-outline"} size={20} color={currentQuestion?.is_favorite ? "#f59e0b" : "#94a3b8"} />
                <Text className={`font-black ml-2 text-xs uppercase ${currentQuestion?.is_favorite ? 'text-amber-500' : 'text-slate-400'}`}>{currentQuestion?.is_favorite ? '★ FAVORİ' : '☆ FAVORİ'}</Text>
@@ -113,6 +126,8 @@ export default function QuizView({ route, navigation }: any) {
             )}
           </View>
         </ScrollView>
+        
+
       </SafeAreaView>
 
       <DrawingCanvas isDrawingMode={isDrawingMode} />
