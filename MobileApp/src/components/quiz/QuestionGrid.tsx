@@ -11,25 +11,35 @@ interface QuestionGridProps {
 export function QuestionGrid({ questions, currentIdx, onJump }: QuestionGridProps) {
   return (
     <View className="bg-white border-b border-slate-100 py-3">
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12 }}>
+      {/* Vertical scroll grid similar to web version */}
+      <ScrollView
+        style={{ maxHeight: 80 }}
+        contentContainerStyle={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 2,
+          paddingHorizontal: 12,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
         {questions.map((q, idx) => {
           const isCurrent = idx === currentIdx;
           const isAnswered = q.status && q.status !== 'empty';
 
-          let btnClass = "w-10 h-10 rounded-xl items-center justify-center border mx-1";
-          let txtClass = "font-black text-xs";
+          let btnClass = 'w-6 h-6 rounded-md items-center justify-center border mx-0.5';
+          let txtClass = 'font-black text-xs';
 
           if (isAnswered) {
-            btnClass += " bg-indigo-50 border-indigo-100";
-            txtClass += " text-indigo-600";
+            btnClass += ' bg-indigo-50 border-indigo-100';
+            txtClass += ' text-indigo-600';
           } else {
-            btnClass += " bg-slate-50 border-slate-100";
-            txtClass += " text-slate-400";
+            btnClass += ' bg-slate-50 border-slate-100';
+            txtClass += ' text-slate-400';
           }
 
           if (isCurrent) {
-            btnClass = "w-10 h-10 rounded-xl items-center justify-center bg-indigo-600 border-transparent shadow-lg shadow-indigo-200";
-            txtClass = "font-black text-xs text-white";
+            btnClass = 'w-8 h-8 rounded-md items-center justify-center bg-indigo-600 border-transparent shadow-lg shadow-indigo-200';
+            txtClass = 'font-black text-xs text-white';
           }
 
           return (

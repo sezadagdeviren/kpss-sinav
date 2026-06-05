@@ -16,13 +16,13 @@ const { width } = Dimensions.get('window');
 
 export default function QuizView({ route, navigation }: any) {
   const { category, year } = route.params;
-  
+
   const {
     questions, currentIdx, currentQuestion, loading, selectedAnswer,
     handleAnswer, toggleFavorite, nextQuestion, prevQuestion, jumpToQuestion
   } = useQuiz({ category, year });
 
-  const { timer, setIsActive } = useTimer(true);
+  const { timer, setIsActive, resetTimer } = useTimer(true);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
 
   const stats = useMemo(() => {
@@ -39,11 +39,11 @@ export default function QuizView({ route, navigation }: any) {
     setIsActive(false);
     try {
       await api.saveExamSummary({
-        kategori: category, 
-        yil: year, 
+        kategori: category,
+        yil: year,
         last_time: timer,
-        last_correct: stats.correct, 
-        last_wrong: stats.wrong, 
+        last_correct: stats.correct,
+        last_wrong: stats.wrong,
         last_empty: stats.empty
       });
       Alert.alert('Sınav Kaydedildi', 'Sonuçlarınız başarıyla kaydedildi.');
@@ -54,7 +54,17 @@ export default function QuizView({ route, navigation }: any) {
     }
   };
 
-  const formatTime = (s: number) => `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+  const resetProgress = async () => {
+    try {
+      await api.resetPool(category, year);
+      resetTimer();
+    } catch (err) {
+      console.error('Reset error', err);
+      Alert.alert('Hata', 'İlerleme sıfırlanamadı.');
+    }
+  };
+
+  const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
 
   if (loading) return <View className="flex-1 justify-center items-center bg-white"><ActivityIndicator size="large" color="#6366f1" /></View>;
 
@@ -63,13 +73,13 @@ export default function QuizView({ route, navigation }: any) {
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <SafeAreaView className="flex-1">
-        <QuizHeader 
+        <QuizHeader
           onBack={() => navigation.goBack()} timer={timer} formatTime={formatTime}
-          onFinish={() => Alert.alert('Sınavı Bitir', 'Emin misiniz?', [{text:'İptal'}, {text:'Bitir', onPress: handleFinish}])}
+          onFinish={() => Alert.alert('Sınavı Bitir', 'Emin misiniz?', [{ text: 'İptal' }, { text: 'Bitir', onPress: handleFinish }])}
           stats={stats} currentIdx={currentIdx} totalQuestions={questions.length}
         />
 
-        <QuestionGrid 
+        <QuestionGrid
           questions={questions}
           currentIdx={currentIdx}
           onJump={jumpToQuestion}
@@ -78,19 +88,19 @@ export default function QuizView({ route, navigation }: any) {
         <ScrollView className="flex-1" scrollEnabled={!isDrawingMode} showsVerticalScrollIndicator={false}>
           <View className="p-5">
             <View className="bg-slate-900 p-4 rounded-3xl mb-6 shadow-xl border border-slate-700">
-               <View className="space-y-1">
-                  <Text className="text-xs font-bold text-white uppercase">SINAV YILI: <Text className="text-indigo-400">{year}</Text></Text>
-                  <Text className="text-xs font-bold text-white uppercase">KONU: <Text className="text-indigo-400">{category}</Text></Text>
-                  <Text className="text-xs font-bold text-white uppercase">SORU NO: <Text className="text-indigo-400">{currentIdx + 1}</Text></Text>
-               </View>
+              <View className="space-y-1">
+                <Text className="text-xs font-bold text-white uppercase">SINAV YILI: <Text className="text-indigo-400">{year}</Text></Text>
+                <Text className="text-xs font-bold text-white uppercase">KONU: <Text className="text-indigo-400">{category}</Text></Text>
+                <Text className="text-xs font-bold text-white uppercase">SORU NO: <Text className="text-indigo-400">{currentIdx + 1}</Text></Text>
+              </View>
             </View>
 
             <View className="w-full bg-white rounded-3xl mb-6 items-center">
-               <Text className="text-[9px] font-black text-slate-300 mb-2 self-end">KPSS HUB ENGINE v1.0</Text>
-               <Image source={{ uri: api.getImageUrl(currentQuestion?.soru_resmi) }} style={{ width: width - 40, height: 400 }} resizeMode="contain" />
+              <Text className="text-[9px] font-black text-slate-300 mb-2 self-end">KPSS HUB ENGINE v1.0</Text>
+              <Image source={{ uri: api.getImageUrl(currentQuestion?.soru_resmi) }} style={{ width: width - 40, height: 400 }} resizeMode="contain" />
             </View>
 
-            <QuizAnswerPanel 
+            <QuizAnswerPanel
               currentQuestion={currentQuestion} selectedAnswer={selectedAnswer}
               isAnswered={isAnswered} onAnswer={handleAnswer} isDrawingMode={isDrawingMode}
             />
@@ -100,9 +110,12 @@ export default function QuizView({ route, navigation }: any) {
               <TouchableOpacity onPress={nextQuestion} disabled={currentIdx >= questions.length - 1 || isDrawingMode} className="flex-[2] h-16 bg-slate-900 rounded-2xl items-center justify-center"><Text className="text-white font-bold">Sonraki Soru →</Text></TouchableOpacity>
             </View>
 
+            <TouchableOpacity onPress={resetProgress} className="w-full py-2 bg-rose-500/10 rounded-lg mb-2">
+              <Text className="text-center text-rose-500 font-bold uppercase">Tüm İlerlemeyi Sıfırla</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-4 rounded-2xl border border-slate-100 mb-6 bg-slate-50">
-               <Icon name={currentQuestion?.is_favorite ? "star" : "star-outline"} size={20} color={currentQuestion?.is_favorite ? "#f59e0b" : "#94a3b8"} />
-               <Text className={`font-black ml-2 text-xs uppercase ${currentQuestion?.is_favorite ? 'text-amber-500' : 'text-slate-400'}`}>{currentQuestion?.is_favorite ? '★ FAVORİ' : '☆ FAVORİ'}</Text>
+              <Icon name={currentQuestion?.is_favorite ? "star" : "star-outline"} size={20} color={currentQuestion?.is_favorite ? "#f59e0b" : "#94a3b8"} />
+              <Text className={`font-black ml-2 text-xs uppercase ${currentQuestion?.is_favorite ? 'text-amber-500' : 'text-slate-400'}`}>{currentQuestion?.is_favorite ? '★ FAVORİ' : '☆ FAVORİ'}</Text>
             </TouchableOpacity>
 
             {isAnswered && (
@@ -113,6 +126,8 @@ export default function QuizView({ route, navigation }: any) {
             )}
           </View>
         </ScrollView>
+
+
       </SafeAreaView>
 
       <DrawingCanvas isDrawingMode={isDrawingMode} />

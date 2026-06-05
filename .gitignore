@@ -1,0 +1,40 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Mobile (eski proje klasörü)
+mobile/
+
+# React Native / Android build artifacts
+MobileApp/android/app/build/
+MobileApp/android/.gradle/
+MobileApp/android/app/.cxx/
+MobileApp/node_modules/
+
+# iOS
+MobileApp/ios/Pods/
+MobileApp/ios/build/
+
+# Web build
+kpss_full_app/dist/
+kpss_full_app/node_modules/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/settings.json
+*.log
