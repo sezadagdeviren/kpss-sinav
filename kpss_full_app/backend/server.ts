@@ -9,6 +9,7 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
+app.use('/images', express.static(path.join(__dirname, '../../tüm sınavlar')));
 app.use('/images', express.static(path.join(__dirname, '../../kpss_hub')));
 
 app.get('/api/categories', async (req, res) => {

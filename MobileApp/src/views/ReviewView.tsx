@@ -9,9 +9,12 @@ import { groupQuestions } from '../utils/quizUtils';
 
 const { width } = Dimensions.get('window');
 
+const EXAM_TYPES = ['Lisans', 'Önlisans', 'Ortaöğretim', 'AGS'];
+
 export default function ReviewView({ route, navigation }: any) {
   const { type } = route.params; // 'wrong' veya 'favorites'
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [selectedExamType, setSelectedExamType] = useState('Lisans');
   const [loading, setLoading] = useState(true);
   
   // Drill-down states
@@ -20,7 +23,7 @@ export default function ReviewView({ route, navigation }: any) {
 
   const loadData = () => {
     setLoading(true);
-    api.fetchReview(type)
+    api.fetchReview(type, selectedExamType)
       .then(setQuestions)
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
@@ -32,7 +35,7 @@ export default function ReviewView({ route, navigation }: any) {
       // Reset navigation state when switching tabs
       setSelectedCategory(null);
       setSelectedYear(null);
-    }, [type])
+    }, [type, selectedExamType])
   );
 
   // Grouping logic
@@ -152,6 +155,30 @@ export default function ReviewView({ route, navigation }: any) {
                </>
              )}
           </View>
+        )}
+
+        {!selectedCategory && (
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={{ gap: 10, paddingRight: 20 }}
+            className="flex-row mt-4 mb-2"
+          >
+            {EXAM_TYPES.map((type) => {
+              const isActive = selectedExamType === type;
+              return (
+                <TouchableOpacity
+                  key={type}
+                  onPress={() => setSelectedExamType(type)}
+                  className={`px-4 py-2 rounded-full border ${isActive ? 'bg-indigo-600 border-indigo-600 shadow-sm' : 'bg-white border-slate-200'}`}
+                >
+                  <Text className={`font-black text-[10px] uppercase ${isActive ? 'text-white' : 'text-slate-600'}`}>
+                    {type}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
         )}
       </View>
 
