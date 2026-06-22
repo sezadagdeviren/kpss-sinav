@@ -35,13 +35,7 @@ export default function HomeView({ navigation }: any) {
     </TouchableOpacity>
   );
 
-  if (loading) {
-    return (
-      <View className="flex-1 justify-center items-center bg-slate-50">
-        <ActivityIndicator size="large" color="#6366f1" />
-      </View>
-    );
-  }
+  // Remove full-screen loading block to prevent entire view from disappearing during exam type changes
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">

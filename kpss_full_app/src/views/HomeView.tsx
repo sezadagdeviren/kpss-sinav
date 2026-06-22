@@ -9,10 +9,13 @@ const EXAM_TYPES = ['Lisans', 'Önlisans', 'Ortaöğretim', 'AGS'];
 export default function HomeView() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<string[]>([]);
-  const [selectedExamType, setSelectedExamType] = useState('Lisans');
+  const [selectedExamType, setSelectedExamType] = useState(() => {
+    return localStorage.getItem('selectedExamType') || 'Lisans';
+  });
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
+    localStorage.setItem('selectedExamType', selectedExamType);
     api.fetchCategories(selectedExamType).then(setCategories);
     api.fetchStats(undefined, undefined, selectedExamType).then(setStats);
   }, [selectedExamType]);
