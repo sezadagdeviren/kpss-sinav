@@ -13,42 +13,54 @@ export default function YearsView({ mode }: YearsViewProps) {
   const location = useLocation();
   const navigate = useNavigate();
   
+  const queryParams = new URLSearchParams(location.search);
+  const sinavTuru = queryParams.get('sinav_turu') || 'Lisans';
+
   // Backward compatibility or direct route check
   const actualMode = mode || (location.pathname.includes('/hata-merkezi') ? 'mistakes' : 'exam');
   const isHataMerkezi = actualMode === 'mistakes';
   const isFavorites = actualMode === 'favorites';
   
+  const [years, setYears] = useState<string[]>([]);
   const [countsPerYear, setCountsPerYear] = useState<Record<string, number>>({});
   const [examSummaries, setExamSummaries] = useState<any[]>([]);
 
   useEffect(() => {
     if (category) {
-      console.log(`📡 Fetching data for category: ${category}, mode: ${actualMode}`);
+      console.log(`📡 Fetching data for category: ${category}, mode: ${actualMode}, sinavTuru: ${sinavTuru}`);
       if (isHataMerkezi) {
-        api.fetchMistakesByYear(category).then(data => {
+        api.fetchMistakesByYear(category, sinavTuru).then(data => {
           console.log('📝 Mistakes Data:', data);
           const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [String(curr.yil)]: Number(curr.count) }), {});
           setCountsPerYear(mapping);
+          setYears(data.map((d: any) => d.yil.toString()));
         });
       } else if (isFavorites) {
-        api.fetchFavoritesByYear(category).then(data => {
+        api.fetchFavoritesByYear(category, sinavTuru).then(data => {
           console.log('📝 Favorites Data:', data);
           const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [String(curr.yil)]: Number(curr.count) }), {});
           setCountsPerYear(mapping);
+          setYears(data.map((d: any) => d.yil.toString()));
         });
       } else {
-        api.fetchExamSummaries(category).then(data => {
+        api.fetchYears(category, sinavTuru).then(loadedYears => {
+          setYears(loadedYears);
+        });
+        api.fetchExamSummaries(category, sinavTuru).then(data => {
           console.log('📝 Exam Summaries:', data);
           setExamSummaries(data);
         });
       }
     }
-  }, [category, actualMode]);
+  }, [category, actualMode, sinavTuru]);
 
   const getTargetUrl = (year: string) => {
-    if (isHataMerkezi) return `/hata-merkezi/${category}/${year}`;
-    if (isFavorites) return `/favorilerim/${category}/${year}`;
-    return `/ders/${category}/${year}`;
+    const base = isHataMerkezi 
+      ? `/hata-merkezi/${category}/${year}` 
+      : isFavorites 
+        ? `/favorilerim/${category}/${year}` 
+        : `/ders/${category}/${year}`;
+    return `${base}?sinav_turu=${encodeURIComponent(sinavTuru)}`;
   };
 
   return (
@@ -61,12 +73,15 @@ export default function YearsView({ mode }: YearsViewProps) {
           <p className="text-slate-500 mt-2 font-bold tracking-widest uppercase text-xs">
             {isHataMerkezi ? 'Hatalı Soruların Bulunduğu Yılı Seçin' : isFavorites ? 'Favori Soruların Bulunduğu Yılı Seçin' : 'Sınav Yılını Seçin'}
           </p>
+          <span className="inline-block mt-3 px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] uppercase tracking-widest font-black rounded-full">
+            {sinavTuru}
+          </span>
         </header>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {Array.from({ length: 20 }, (_, i) => (2025 - i).toString()).map(y => {
+          {years.map(y => {
             const count = countsPerYear[y];
-            const summary = examSummaries.find(s => s.yil === y);
+            const summary = examSummaries.find(s => s.yil === y || String(s.yil) === String(y));
 
             return (
               <SelectionYearCard 

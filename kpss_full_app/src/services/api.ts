@@ -12,24 +12,40 @@ const handleResponse = async (res: Response) => {
 };
 
 export const api = {
-  fetchCategories: async (): Promise<string[]> => {
-    const data = await fetch(`${API_BASE}/api/categories`).then(handleResponse);
+  fetchCategories: async (sinavTuru?: string): Promise<string[]> => {
+    const url = new URL(`${API_BASE}/api/categories`);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    const data = await fetch(url.toString()).then(handleResponse);
     return data.map((c: any) => c.kategori);
   },
 
-  fetchQuestions: async (category: string, year: string): Promise<Question[]> => {
-    return fetch(`${API_BASE}/api/questions/${encodeURIComponent(category)}/${year}`).then(handleResponse);
+  fetchYears: async (category: string, sinavTuru?: string): Promise<string[]> => {
+    const url = new URL(`${API_BASE}/api/years/${encodeURIComponent(category)}`);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    return fetch(url.toString()).then(handleResponse);
   },
 
-  fetchReview: async (type: 'wrong' | 'favorites'): Promise<Question[]> => {
-    return fetch(`${API_BASE}/api/review/${type}/all`).then(handleResponse);
+  fetchQuestions: async (category: string, year: string, sinavTuru?: string): Promise<Question[]> => {
+    const url = new URL(`${API_BASE}/api/questions/${encodeURIComponent(category)}/${year}`);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    return fetch(url.toString()).then(handleResponse);
   },
 
-  fetchStats: async (category?: string, year?: string): Promise<Stats> => {
-    let url = `${API_BASE}/api/stats`;
-    if (category) url += `/${encodeURIComponent(category)}`;
-    if (year) url += `/${year}`;
-    return fetch(url).then(handleResponse);
+  fetchReview: async (type: 'wrong' | 'favorites', sinavTuru?: string): Promise<Question[]> => {
+    const url = new URL(`${API_BASE}/api/review/${type}/all`);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    return fetch(url.toString()).then(handleResponse);
+  },
+
+  fetchStats: async (category?: string, year?: string, sinavTuru?: string): Promise<Stats> => {
+    let baseUrl = `${API_BASE}/api/stats`;
+    if (category) {
+      baseUrl += `/${encodeURIComponent(category)}`;
+      if (year) baseUrl += `/${year}`;
+    }
+    const url = new URL(baseUrl);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    return fetch(url.toString()).then(handleResponse);
   },
 
   updateActivity: async (questionId: number, status?: 'correct' | 'wrong' | 'empty', isFavorite?: boolean, userChoice?: string): Promise<any> => {
@@ -40,11 +56,11 @@ export const api = {
     }).then(handleResponse);
   },
 
-  resetPool: async (category: string, year: string) => {
+  resetPool: async (category: string, year: string, sinavTuru?: string) => {
     return fetch(`${API_BASE}/api/reset`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category, year })
+      body: JSON.stringify({ category, year, sinav_turu: sinavTuru })
     }).then(handleResponse);
   },
 
@@ -64,12 +80,16 @@ export const api = {
     }).then(handleResponse);
   },
 
-  fetchMistakesByYear: async (category: string): Promise<{ yil: string, count: number }[]> => {
-    return fetch(`${API_BASE}/api/mistakes-by-year/${encodeURIComponent(category)}`).then(handleResponse);
+  fetchMistakesByYear: async (category: string, sinavTuru?: string): Promise<{ yil: string, count: number }[]> => {
+    const url = new URL(`${API_BASE}/api/mistakes-by-year/${encodeURIComponent(category)}`);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    return fetch(url.toString()).then(handleResponse);
   },
 
-  fetchFavoritesByYear: async (category: string): Promise<{ yil: string, count: number }[]> => {
-    return fetch(`${API_BASE}/api/favorites-by-year/${encodeURIComponent(category)}`).then(handleResponse);
+  fetchFavoritesByYear: async (category: string, sinavTuru?: string): Promise<{ yil: string, count: number }[]> => {
+    const url = new URL(`${API_BASE}/api/favorites-by-year/${encodeURIComponent(category)}`);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    return fetch(url.toString()).then(handleResponse);
   },
 
   saveExamSummary: async (summary: any) => {
@@ -80,8 +100,10 @@ export const api = {
     }).then(handleResponse);
   },
 
-  fetchExamSummaries: async (category: string) => {
-    return fetch(`${API_BASE}/api/exam-summaries/${encodeURIComponent(category)}`).then(handleResponse);
+  fetchExamSummaries: async (category: string, sinavTuru?: string) => {
+    const url = new URL(`${API_BASE}/api/exam-summaries/${encodeURIComponent(category)}`);
+    if (sinavTuru) url.searchParams.append('sinav_turu', sinavTuru);
+    return fetch(url.toString()).then(handleResponse);
   },
 
   getImageUrl: (path: string) => `${API_BASE}/images/${path}`

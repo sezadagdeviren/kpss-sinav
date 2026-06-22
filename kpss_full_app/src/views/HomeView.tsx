@@ -4,15 +4,18 @@ import { api } from '../services/api';
 import type { Stats } from '../types';
 import { SelectionCategoryCard } from '../components/SelectionComponents';
 
+const EXAM_TYPES = ['Lisans', 'Önlisans', 'Ortaöğretim', 'AGS'];
+
 export default function HomeView() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<string[]>([]);
+  const [selectedExamType, setSelectedExamType] = useState('Lisans');
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    api.fetchCategories().then(setCategories);
-    api.fetchStats().then(setStats);
-  }, []);
+    api.fetchCategories(selectedExamType).then(setCategories);
+    api.fetchStats(undefined, undefined, selectedExamType).then(setStats);
+  }, [selectedExamType]);
 
   return (
     <div className="view-container">
@@ -24,32 +27,58 @@ export default function HomeView() {
           <p className="text-slate-500 font-semibold tracking-wide uppercase text-xs">Profesyonel Çalışma Platformu</p>
         </header>
 
+        {/* Sınav Türü Seçimi */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-black text-slate-400 uppercase tracking-wider text-center sm:text-left">Sınav Türü Seçin</h3>
+          <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+            {EXAM_TYPES.map(type => {
+              const isActive = selectedExamType === type;
+              return (
+                <button
+                  key={type}
+                  onClick={() => setSelectedExamType(type)}
+                  className={`px-6 py-3 rounded-full font-black text-xs uppercase tracking-wider transition-all duration-300 border ${
+                    isActive 
+                      ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-105' 
+                      : 'glass-card border-white/5 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {type}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <QuickCard 
             title="Hata Merkezi" 
             desc="Yanlışlarını temizle" 
             count={stats?.mistake_count} 
             color="red" 
-            onClick={() => navigate('/hata-merkezi')} 
+            onClick={() => navigate(`/hata-merkezi?sinav_turu=${encodeURIComponent(selectedExamType)}`)} 
           />
           <QuickCard 
             title="Favorilerim" 
             desc="Kaydettiğin sorular" 
             count={stats?.favorite_count} 
             color="amber" 
-            onClick={() => navigate('/favorilerim')} 
+            onClick={() => navigate(`/favorilerim?sinav_turu=${encodeURIComponent(selectedExamType)}`)} 
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map(cat => (
-            <SelectionCategoryCard 
-              key={cat} 
-              name={cat} 
-              onClick={() => navigate(`/ders/${cat}`)} 
-              iconColor="indigo"
-            />
-          ))}
+        <div className="space-y-4">
+          <h3 className="text-sm font-black text-slate-400 uppercase tracking-wider text-center sm:text-left">Dersler</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map(cat => (
+              <SelectionCategoryCard 
+                key={cat} 
+                name={cat} 
+                onClick={() => navigate(`/ders/${cat}?sinav_turu=${encodeURIComponent(selectedExamType)}`)} 
+                iconColor="indigo"
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

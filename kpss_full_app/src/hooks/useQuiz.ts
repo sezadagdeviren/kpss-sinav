@@ -7,9 +7,10 @@ interface UseQuizProps {
   year?: string;
   isReview: boolean;
   isFavoritesMode: boolean;
+  sinavTuru?: string;
 }
 
-export function useQuiz({ category, year, isReview, isFavoritesMode }: UseQuizProps) {
+export function useQuiz({ category, year, isReview, isFavoritesMode, sinavTuru }: UseQuizProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -23,7 +24,7 @@ export function useQuiz({ category, year, isReview, isFavoritesMode }: UseQuizPr
       let data: Question[] = [];
       
       if (isFavoritesMode) {
-        data = await api.fetchReview('favorites');
+        data = await api.fetchReview('favorites', sinavTuru);
         if (category && year) {
           data = data.filter(q => 
             q.kategori?.toLowerCase().trim() === category.toLowerCase().trim() && 
@@ -31,7 +32,7 @@ export function useQuiz({ category, year, isReview, isFavoritesMode }: UseQuizPr
           );
         }
       } else if (isReview) {
-        const allReview = await api.fetchReview('wrong');
+        const allReview = await api.fetchReview('wrong', sinavTuru);
         if (category && year) {
           data = allReview.filter(q => 
             q.kategori?.toLowerCase().trim() === category.toLowerCase().trim() && 
@@ -42,10 +43,10 @@ export function useQuiz({ category, year, isReview, isFavoritesMode }: UseQuizPr
         }
         data = data.map(q => ({ ...q, status: null }));
       } else if (category && year) {
-        data = await api.fetchQuestions(category, year);
+        data = await api.fetchQuestions(category, year, sinavTuru);
       }
 
-      console.log(`🔍 Quiz Modu: ${isReview ? 'Hata' : isFavoritesMode ? 'Favori' : 'Normal'} | Kategori: ${category} | Yıl: ${year} | Bulunan Soru: ${data.length}`);
+      console.log(`🔍 Quiz Modu: ${isReview ? 'Hata' : isFavoritesMode ? 'Favori' : 'Normal'} | Sınav Türü: ${sinavTuru} | Kategori: ${category} | Yıl: ${year} | Bulunan Soru: ${data.length}`);
 
       setQuestions(data);
       if (category && year) refreshStats();
@@ -57,12 +58,12 @@ export function useQuiz({ category, year, isReview, isFavoritesMode }: UseQuizPr
   };
 
   const refreshStats = () => {
-    if (category && year) api.fetchStats(category, year).then(setStats).catch(console.error);
+    if (category && year) api.fetchStats(category, year, sinavTuru).then(setStats).catch(console.error);
   };
 
   useEffect(() => {
     loadQuestions();
-  }, [category, year, isReview, isFavoritesMode]);
+  }, [category, year, isReview, isFavoritesMode, sinavTuru]);
 
   const currentQuestion = useMemo(() => questions[currentIdx], [questions, currentIdx]);
 

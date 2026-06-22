@@ -17,6 +17,9 @@ export default function QuizView() {
   const { category, year } = useParams();
   const location = useLocation();
 
+  const queryParams = new URLSearchParams(location.search);
+  const sinavTuru = queryParams.get('sinav_turu') || 'Lisans';
+
   const isReview = location.pathname.includes('/hata-merkezi');
   const isFavoritesMode = location.pathname.includes('/favorilerim');
   const isGlobalReview = isFavoritesMode || (isReview && !category);
@@ -25,7 +28,7 @@ export default function QuizView() {
   const {
     questions, currentIdx, currentQuestion, loading, selectedAnswer,
     handleAnswer, toggleFavorite, removeMistake, nextQuestion, prevQuestion, jumpToQuestion, jumpToStart
-  } = useQuiz({ category, year, isReview, isFavoritesMode });
+  } = useQuiz({ category, year, isReview, isFavoritesMode, sinavTuru });
 
   const { timer, setIsActive, resetTimer } = useTimer({ category, year, enabled: shouldShowTimer });
 
@@ -56,6 +59,7 @@ export default function QuizView() {
       await api.saveExamSummary({
         kategori: category, 
         yil: year, 
+        sinav_turu: sinavTuru,
         last_time: resultToSave.timer,
         last_correct: resultToSave.stats.correct_count, 
         last_wrong: resultToSave.stats.wrong_count, 
@@ -71,7 +75,7 @@ export default function QuizView() {
 
   const resetProgress = async () => {
     if (!category || !year || !window.confirm('Bu yıla ait ilerlemeyi tamamen sıfırlamak istiyor musunuz?')) return;
-    await api.resetPool(category, year);
+    await api.resetPool(category, year, sinavTuru);
     resetTimer();
     window.location.reload();
   };
