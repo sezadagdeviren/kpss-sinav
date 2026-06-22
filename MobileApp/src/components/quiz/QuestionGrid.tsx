@@ -24,21 +24,24 @@ export function QuestionGrid({ questions, currentIdx, onJump }: QuestionGridProp
       >
         {questions.map((q, idx) => {
           const isCurrent = idx === currentIdx;
-          const isAnswered = q.status && q.status !== 'empty';
+          const status = q.status;
 
           let btnClass = 'w-6 h-6 rounded-md items-center justify-center border mx-0.5';
           let txtClass = 'font-black text-xs';
 
-          if (isAnswered) {
-            btnClass += ' bg-indigo-50 border-indigo-100';
-            txtClass += ' text-indigo-600';
+          if (status === 'correct') {
+            btnClass += ' bg-emerald-50 border-emerald-200';
+            txtClass += ' text-emerald-600';
+          } else if (status === 'wrong') {
+            btnClass += ' bg-rose-50 border-rose-200';
+            txtClass += ' text-rose-600';
           } else {
             btnClass += ' bg-slate-50 border-slate-100';
             txtClass += ' text-slate-400';
           }
 
           if (isCurrent) {
-            btnClass = 'w-8 h-8 rounded-md items-center justify-center bg-indigo-600 border-transparent shadow-lg shadow-indigo-200';
+            btnClass = 'w-8 h-8 rounded-md items-center justify-center bg-indigo-600 border-indigo-700 shadow-lg shadow-indigo-200';
             txtClass = 'font-black text-xs text-white';
           }
 

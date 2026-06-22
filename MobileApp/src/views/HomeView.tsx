@@ -4,21 +4,25 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { api } from '../services/api';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+const EXAM_TYPES = ['Lisans', 'Önlisans', 'Ortaöğretim', 'AGS'];
+
 export default function HomeView({ navigation }: any) {
   const [categories, setCategories] = useState<string[]>([]);
+  const [selectedExamType, setSelectedExamType] = useState('Lisans');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.fetchCategories()
+    setLoading(true);
+    api.fetchCategories(selectedExamType)
       .then(setCategories)
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedExamType]);
 
   const renderItem = ({ item }: { item: string }) => (
     <TouchableOpacity 
       className="bg-white p-5 rounded-2xl mb-4 border border-slate-100 shadow-sm flex-row items-center"
-      onPress={() => navigation.navigate('Years', { category: item })}
+      onPress={() => navigation.navigate('Years', { category: item, sinavTuru: selectedExamType })}
     >
       <View className="bg-indigo-50 p-3 rounded-xl mr-4">
         <Icon name="book-outline" size={24} color="#6366f1" />
@@ -64,12 +68,39 @@ export default function HomeView({ navigation }: any) {
             </TouchableOpacity>
           </View>
 
-          <Text className="text-xl font-bold text-slate-900 mt-10 mb-4">Kategoriler</Text>
-          {categories.map((item) => (
-            <View key={item}>
-              {renderItem({ item })}
-            </View>
-          ))}
+          <Text className="text-xl font-bold text-slate-900 mt-8 mb-3">Sınav Türü</Text>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={{ gap: 10, paddingRight: 20 }}
+            className="flex-row mb-6"
+          >
+            {EXAM_TYPES.map((type) => {
+              const isActive = selectedExamType === type;
+              return (
+                <TouchableOpacity
+                  key={type}
+                  onPress={() => setSelectedExamType(type)}
+                  className={`px-5 py-2.5 rounded-full border ${isActive ? 'bg-indigo-600 border-indigo-600 shadow-md shadow-indigo-100' : 'bg-white border-slate-200'}`}
+                >
+                  <Text className={`font-black text-xs ${isActive ? 'text-white' : 'text-slate-600'}`}>
+                    {type}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+
+          <Text className="text-xl font-bold text-slate-900 mt-4 mb-4">Kategoriler</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#6366f1" className="my-8" />
+          ) : (
+            categories.map((item) => (
+              <View key={item}>
+                {renderItem({ item })}
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

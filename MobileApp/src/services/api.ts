@@ -10,33 +10,52 @@ const client = axios.create({
 });
 
 export const api = {
-  fetchCategories: async (): Promise<string[]> => {
-    const res = await client.get('/api/categories');
+  fetchCategories: async (sinavTuru?: string): Promise<string[]> => {
+    const res = await client.get('/api/categories', {
+      params: { sinav_turu: sinavTuru }
+    });
     return res.data.map((c: any) => c.kategori);
   },
 
-  fetchQuestions: async (category: string, year: string): Promise<Question[]> => {
-    const res = await client.get(`/api/questions/${encodeURIComponent(category)}/${year}`);
+  fetchYears: async (category: string, sinavTuru?: string): Promise<string[]> => {
+    const res = await client.get(`/api/years/${encodeURIComponent(category)}`, {
+      params: { sinav_turu: sinavTuru }
+    });
     return res.data;
   },
 
-  fetchReview: async (type: 'wrong' | 'favorites'): Promise<Question[]> => {
-    const res = await client.get(`/api/review/${type}/all`);
+  fetchQuestions: async (category: string, year: string, sinavTuru?: string): Promise<Question[]> => {
+    const res = await client.get(`/api/questions/${encodeURIComponent(category)}/${year}`, {
+      params: { sinav_turu: sinavTuru }
+    });
     return res.data;
   },
 
-  fetchStats: async (category: string, year: string): Promise<Stats> => {
-    const res = await client.get(`/api/stats/${encodeURIComponent(category)}/${year}`);
+  fetchReview: async (type: 'wrong' | 'favorites', sinavTuru?: string): Promise<Question[]> => {
+    const res = await client.get(`/api/review/${type}/all`, {
+      params: { sinav_turu: sinavTuru }
+    });
     return res.data;
   },
 
-  fetchExamSummaries: async (category: string): Promise<any[]> => {
-    const { data } = await client.get(`/api/exam-summaries/${encodeURIComponent(category)}`);
+  fetchStats: async (category: string, year: string, sinavTuru?: string): Promise<Stats> => {
+    const res = await client.get(`/api/stats/${encodeURIComponent(category)}/${year}`, {
+      params: { sinav_turu: sinavTuru }
+    });
+    return res.data;
+  },
+
+  fetchExamSummaries: async (category: string, sinavTuru?: string): Promise<any[]> => {
+    const { data } = await client.get(`/api/exam-summaries/${encodeURIComponent(category)}`, {
+      params: { sinav_turu: sinavTuru }
+    });
     return data;
   },
 
-  fetchMistakesByYear: async (category: string): Promise<any[]> => {
-    const { data } = await client.get(`/api/mistakes-by-year/${encodeURIComponent(category)}`);
+  fetchMistakesByYear: async (category: string, sinavTuru?: string): Promise<any[]> => {
+    const { data } = await client.get(`/api/mistakes-by-year/${encodeURIComponent(category)}`, {
+      params: { sinav_turu: sinavTuru }
+    });
     return data;
   },
 
@@ -45,8 +64,8 @@ export const api = {
     return data;
   },
 
-  resetPool: async (category: string, year: string) => {
-    const { data } = await client.post('/api/reset', { category, year });
+  resetPool: async (category: string, year: string, sinavTuru?: string) => {
+    const { data } = await client.post('/api/reset', { category, year, sinav_turu: sinavTuru });
     return data;
   },
 
