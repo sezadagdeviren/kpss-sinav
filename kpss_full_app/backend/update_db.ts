@@ -82,7 +82,7 @@ async function updateDb() {
     }
 
     console.log('📡 Okunuyor: data.json ...');
-    const dataPath = path.join(__dirname, '../../kpss_hub/data.json');
+    const dataPath = path.join(__dirname, '../../data.json');
     const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
     let count = 0;
