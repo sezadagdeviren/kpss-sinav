@@ -17,10 +17,11 @@ async function migrate() {
         kategori VARCHAR(50) NOT NULL,
         konu VARCHAR(100),
         alt_konu VARCHAR(150),
+        sinav_turu VARCHAR(50) DEFAULT 'Lisans',
         zorluk_seviyesi VARCHAR(50),
         cozum TEXT,
         soru_resmi VARCHAR(255) NOT NULL,
-        UNIQUE KEY unique_question (yil, soru_no, kategori)
+        UNIQUE KEY unique_question (yil, soru_no, kategori, sinav_turu)
       ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
     `);
 
@@ -42,11 +43,12 @@ async function migrate() {
       CREATE TABLE IF NOT EXISTS user_exam_summaries (
         kategori VARCHAR(50),
         yil YEAR,
+        sinav_turu VARCHAR(50) DEFAULT 'Lisans',
         last_time INT,
         last_correct INT,
         last_wrong INT,
         last_empty INT,
-        PRIMARY KEY (kategori, yil)
+        PRIMARY KEY (kategori, yil, sinav_turu)
       ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
     `);
 
@@ -74,8 +76,8 @@ async function migrate() {
         if (category === 'Anayasa') category = 'Vatandaşlık';
 
         await connection.query(`
-          INSERT INTO questions (yil, soru_no, dogru_cevap, kategori, konu, alt_konu, zorluk_seviyesi, cozum, soru_resmi)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO questions (yil, soru_no, dogru_cevap, kategori, konu, alt_konu, sinav_turu, zorluk_seviyesi, cozum, soru_resmi)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           ON DUPLICATE KEY UPDATE
             dogru_cevap = VALUES(dogru_cevap),
             konu = VALUES(konu),
@@ -90,6 +92,7 @@ async function migrate() {
           category,
           item.konu || '',
           item.alt_konu || '',
+          item.sinav_turu || 'Lisans',
           item.zorluk_seviyesi || 'Orta',
           item.cozum || '',
           item.soru_resmi

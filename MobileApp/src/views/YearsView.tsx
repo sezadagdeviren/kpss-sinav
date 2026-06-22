@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function YearsView({ route, navigation }: any) {
-  const { category } = route.params;
+  const { category, sinavTuru } = route.params;
   const [years, setYears] = useState<string[]>([]);
   const [summaries, setSummaries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,10 +14,14 @@ export default function YearsView({ route, navigation }: any) {
 
   const loadData = async () => {
     try {
-      const data = await api.fetchExamSummaries(category);
-      setSummaries(data);
+      const [yearsData, summaryData] = await Promise.all([
+        api.fetchYears(category, sinavTuru),
+        api.fetchExamSummaries(category, sinavTuru)
+      ]);
+      setYears(yearsData);
+      setSummaries(summaryData);
     } catch (err) {
-      console.error('Summary fetch error:', err);
+      console.error('Data fetch error:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -27,14 +31,8 @@ export default function YearsView({ route, navigation }: any) {
   useFocusEffect(
     React.useCallback(() => {
       loadData();
-    }, [category])
+    }, [category, sinavTuru])
   );
-
-  useEffect(() => {
-    const yearList = [];
-    for (let y = 2025; y >= 2006; y--) yearList.push(y.toString());
-    setYears(yearList);
-  }, [category]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -48,12 +46,12 @@ export default function YearsView({ route, navigation }: any) {
   };
 
   const renderItem = ({ item }: { item: string }) => {
-    const summary = summaries.find(s => s.yil === item);
+    const summary = summaries.find(s => s.yil === item || s.yil?.toString() === item);
 
     return (
       <TouchableOpacity 
         className="bg-white p-7 rounded-[32px] mb-5 border border-slate-200 shadow-xl shadow-slate-200 relative overflow-hidden active:scale-95"
-        onPress={() => navigation.navigate('Quiz', { category, year: item })}
+        onPress={() => navigation.navigate('Quiz', { category, year: item, sinavTuru })}
       >
         <View className="flex-row justify-between items-center">
           <View>
@@ -111,7 +109,12 @@ export default function YearsView({ route, navigation }: any) {
     <SafeAreaView className="flex-1 bg-slate-50">
       <View className="px-8 pt-6 pb-2">
         <Text className="text-3xl font-black text-slate-900 tracking-tight">{category}</Text>
-        <Text className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Sınav Geçmişi ve Kayıtlar</Text>
+        <View className="flex-row items-center mt-1" style={{ gap: 8 }}>
+          <View className="bg-indigo-600 px-2.5 py-0.5 rounded-md">
+            <Text className="text-[9px] font-black text-white uppercase">{sinavTuru || 'Lisans'}</Text>
+          </View>
+          <Text className="text-slate-400 text-xs font-bold uppercase tracking-widest">Sınav Geçmişi</Text>
+        </View>
       </View>
       <FlatList
         data={years}

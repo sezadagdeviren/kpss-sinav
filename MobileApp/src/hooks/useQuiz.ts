@@ -5,11 +5,12 @@ import type { Question } from '../types';
 interface UseQuizProps {
   category?: string;
   year?: string;
+  sinavTuru?: string;
   mode?: 'wrong' | 'favorites' | 'exam';
   initialIdx?: number;
 }
 
-export function useQuiz({ category, year, mode = 'exam', initialIdx = 0 }: UseQuizProps) {
+export function useQuiz({ category, year, sinavTuru, mode = 'exam', initialIdx = 0 }: UseQuizProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIdx, setCurrentIdx] = useState(initialIdx);
   const [loading, setLoading] = useState(true);
@@ -30,13 +31,13 @@ export function useQuiz({ category, year, mode = 'exam', initialIdx = 0 }: UseQu
     try {
       let data: Question[] = [];
       if (isFavoritesMode) {
-        data = await api.fetchReview('favorites');
+        data = await api.fetchReview('favorites', sinavTuru);
         if (category && year) data = data.filter(q => q.kategori === category && q.yil.toString() === year);
       } else if (isReview) {
-        data = await api.fetchReview('wrong');
+        data = await api.fetchReview('wrong', sinavTuru);
         if (category && year) data = data.filter(q => q.kategori === category && q.yil.toString() === year);
       } else {
-        data = await api.fetchQuestions(category!, year!);
+        data = await api.fetchQuestions(category!, year!, sinavTuru);
       }
       console.log(`✅ ${data.length} soru yüklendi.`);
       setQuestions(data);
@@ -49,7 +50,7 @@ export function useQuiz({ category, year, mode = 'exam', initialIdx = 0 }: UseQu
 
   useEffect(() => {
     loadQuestions();
-  }, [category, year, mode]);
+  }, [category, year, sinavTuru, mode]);
 
   const currentQuestion = useMemo(() => questions[currentIdx], [questions, currentIdx]);
 

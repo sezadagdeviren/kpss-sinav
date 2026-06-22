@@ -11,6 +11,7 @@ export interface Question {
   status: 'correct' | 'wrong' | 'empty' | null;
   is_favorite: boolean;
   user_choice: string | null;
+  sinav_turu?: string;
 }
 
 export interface Stats {

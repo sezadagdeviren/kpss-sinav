@@ -15,12 +15,12 @@ import { QuestionGrid } from '../components/quiz/QuestionGrid';
 const { width } = Dimensions.get('window');
 
 export default function QuizView({ route, navigation }: any) {
-  const { category, year } = route.params;
+  const { category, year, sinavTuru } = route.params;
 
   const {
     questions, currentIdx, currentQuestion, loading, selectedAnswer,
     handleAnswer, toggleFavorite, nextQuestion, prevQuestion, jumpToQuestion
-  } = useQuiz({ category, year });
+  } = useQuiz({ category, year, sinavTuru });
 
   const { timer, setIsActive, resetTimer } = useTimer(true);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
@@ -41,6 +41,7 @@ export default function QuizView({ route, navigation }: any) {
       await api.saveExamSummary({
         kategori: category,
         yil: year,
+        sinav_turu: sinavTuru,
         last_time: timer,
         last_correct: stats.correct,
         last_wrong: stats.wrong,
@@ -56,7 +57,7 @@ export default function QuizView({ route, navigation }: any) {
 
   const resetProgress = async () => {
     try {
-      await api.resetPool(category, year);
+      await api.resetPool(category, year, sinavTuru);
       resetTimer();
     } catch (err) {
       console.error('Reset error', err);
