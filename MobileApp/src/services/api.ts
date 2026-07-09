@@ -44,6 +44,20 @@ async function anyPromise<T>(promises: Promise<T>[]): Promise<T> {
   });
 }
 
+let resolveInit: (url: string) => void;
+const initPromise = new Promise<string>((resolve) => {
+  resolveInit = resolve;
+});
+
+// Axios request interceptor: Auto-detection tamamlanana kadar tüm istekleri bekletir
+client.interceptors.request.use(async (config) => {
+  const finalBaseUrl = await initPromise;
+  config.baseURL = finalBaseUrl;
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
 // Uygulama açılışında aktif backend'i otomatik tespit et
 async function detectActiveBaseUrl(): Promise<void> {
   try {
@@ -53,10 +67,11 @@ async function detectActiveBaseUrl(): Promise<void> {
     });
     const workingUrl = await anyPromise(promises);
     activeBaseUrl = workingUrl;
-    client.defaults.baseURL = workingUrl;
+    resolveInit(workingUrl);
     console.log('✅ Backend bulundu:', workingUrl);
   } catch {
     console.warn('⚠️ Hiçbir backend bulunamadı, varsayılan kullanılıyor:', activeBaseUrl);
+    resolveInit(activeBaseUrl);
   }
 }
 
