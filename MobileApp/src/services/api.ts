@@ -4,10 +4,10 @@ import type { Question, Stats } from '../types';
 
 // Tüm olası backend IP'leri - hangisi yanıt verirse ona bağlanır
 const CANDIDATES = [
-  'http://10.21.106.104:3001',  // Termux / Güncel WiFi IP
-  'http://192.168.1.101:3001',  // Eski Termux IP
-  'http://10.0.2.2:3001',       // Android Emülatör
-  'http://localhost:3001',       // Localhost (fallback)
+  'http://10.21.106.104:3002',  // Termux / Güncel WiFi IP
+  'http://192.168.1.101:3002',  // Eski Termux IP
+  'http://10.0.2.2:3002',       // Android Emülatör
+  'http://localhost:3002',       // Localhost (fallback)
 ];
 
 let activeBaseUrl = CANDIDATES[0];

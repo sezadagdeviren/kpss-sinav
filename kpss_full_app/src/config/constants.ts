@@ -1,7 +1,7 @@
 export const API_CONFIG = {
   BASE_URL: typeof window !== 'undefined'
-    ? `${window.location.protocol}//${window.location.hostname}:3001`
-    : 'http://localhost:3001',
+    ? `${window.location.protocol}//${window.location.hostname}:3002`
+    : 'http://localhost:3002',
   TIMEOUT: 10000,
 };
 

@@ -6,7 +6,7 @@ import net from 'net';
 import os from 'os';
 
 const app = express();
-const port = 3001;
+const port = 3002;
 
 app.use(cors());
 app.use(express.json());
@@ -313,7 +313,7 @@ async function startServer() {
     });
     console.log('='.repeat(60));
     console.log('💡  Web uygulama bu IP\'lerden herhangi birine bağlanabilir.');
-    console.log('⚠️   Sadece bir sunucu aynı anda çalıştırılabilir (port: 3001)');
+    console.log(`⚠️   Sadece bir sunucu aynı anda çalıştırılabilir (port: ${port})`);
     console.log('='.repeat(60) + '\n');
   });
 
