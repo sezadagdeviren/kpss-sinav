@@ -17,6 +17,33 @@ const client = axios.create({
   timeout: API_CONFIG.TIMEOUT,
 });
 
+// Polyfill-like implementation for Promise.any to prevent crashes on Hermes
+async function anyPromise<T>(promises: Promise<T>[]): Promise<T> {
+  if (Promise.any) {
+    return Promise.any(promises);
+  }
+  return new Promise<T>((resolve, reject) => {
+    let rejectedCount = 0;
+    const errors: any[] = [];
+    if (promises.length === 0) {
+      reject(new TypeError('All promises were rejected'));
+      return;
+    }
+    promises.forEach((p) => {
+      Promise.resolve(p).then(
+        (val) => resolve(val),
+        (err) => {
+          errors.push(err);
+          rejectedCount++;
+          if (rejectedCount === promises.length) {
+            reject(new TypeError('All promises were rejected'));
+          }
+        }
+      );
+    });
+  });
+}
+
 // Uygulama açılışında aktif backend'i otomatik tespit et
 async function detectActiveBaseUrl(): Promise<void> {
   try {
@@ -24,7 +51,7 @@ async function detectActiveBaseUrl(): Promise<void> {
       await axios.get(`${url}/api/categories`, { timeout: 2000 });
       return url;
     });
-    const workingUrl = await Promise.any(promises);
+    const workingUrl = await anyPromise(promises);
     activeBaseUrl = workingUrl;
     client.defaults.baseURL = workingUrl;
     console.log('✅ Backend bulundu:', workingUrl);
