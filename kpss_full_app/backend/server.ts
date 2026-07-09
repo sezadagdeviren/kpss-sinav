@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db';
 import path from 'path';
+import net from 'net';
+import os from 'os';
 
 const app = express();
 const port = 3001;
@@ -256,4 +258,74 @@ app.get('/api/favorites-by-year/:category', async (req, res) => {
   }
 });
 
-app.listen(port, '0.0.0.0', () => console.log(`Backend running on http://0.0.0.0:${port}`));
+
+function getLocalIPs(): string[] {
+  const interfaces = os.networkInterfaces();
+  const ips: string[] = [];
+  for (const iface of Object.values(interfaces)) {
+    if (!iface) continue;
+    for (const alias of iface) {
+      if (alias.family === 'IPv4' && !alias.internal) {
+        ips.push(alias.address);
+      }
+    }
+  }
+  return ips;
+}
+
+function isPortInUse(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const tester = net.createConnection({ port, host: '127.0.0.1' });
+    tester.once('connect', () => {
+      tester.destroy();
+      resolve(true); // Port is in use
+    });
+    tester.once('error', () => {
+      resolve(false); // Port is free
+    });
+  });
+}
+
+async function startServer() {
+  const inUse = await isPortInUse(port);
+
+  if (inUse) {
+    console.error('\n' + '='.repeat(60));
+    console.error('⚠️  UYARI: Port 3001 zaten kullanımda!');
+    console.error('='.repeat(60));
+    console.error('Başka bir backend sunucusu çalışıyor olabilir.');
+    console.error('Lütfen önce diğer sunucuyu durdurun (Ctrl+C ile).');
+    console.error('\nEğer bu Termux\'ta çalışıyorsa:  Termux\'ta Ctrl+C yapın');
+    console.error('Eğer bu PC\'de çalışıyorsa:       PC terminalde Ctrl+C yapın');
+    console.error('='.repeat(60) + '\n');
+    process.exit(1);
+  }
+
+  const server = app.listen(port, '0.0.0.0', () => {
+    const localIPs = getLocalIPs();
+    console.log('\n' + '='.repeat(60));
+    console.log('✅  Backend başlatıldı!');
+    console.log('='.repeat(60));
+    console.log(`📡  Dinleme: http://0.0.0.0:${port}`);
+    console.log(`🔗  Yerel erişim: http://localhost:${port}`);
+    localIPs.forEach(ip => {
+      console.log(`🌐  Ağ erişimi:   http://${ip}:${port}`);
+    });
+    console.log('='.repeat(60));
+    console.log('💡  Web uygulama bu IP\'lerden herhangi birine bağlanabilir.');
+    console.log('⚠️   Sadece bir sunucu aynı anda çalıştırılabilir (port: 3001)');
+    console.log('='.repeat(60) + '\n');
+  });
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`\n⚠️  Port ${port} zaten kullanımda! Diğer sunucuyu durdurun.\n`);
+      process.exit(1);
+    } else {
+      throw err;
+    }
+  });
+}
+
+startServer();
+

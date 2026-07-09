@@ -2,12 +2,39 @@ import axios from 'axios';
 import { API_CONFIG } from '../config/constants';
 import type { Question, Stats } from '../types';
 
-const API_BASE = API_CONFIG.BASE_URL;
+// Tüm olası backend IP'leri - hangisi yanıt verirse ona bağlanır
+const CANDIDATES = [
+  'http://10.21.106.104:3001',  // Termux / Güncel WiFi IP
+  'http://192.168.1.101:3001',  // Eski Termux IP
+  'http://10.0.2.2:3001',       // Android Emülatör
+  'http://localhost:3001',       // Localhost (fallback)
+];
+
+let activeBaseUrl = CANDIDATES[0];
 
 const client = axios.create({
-  baseURL: API_BASE,
-  timeout: API_CONFIG.TIMEOUT
+  baseURL: activeBaseUrl,
+  timeout: API_CONFIG.TIMEOUT,
 });
+
+// Uygulama açılışında aktif backend'i otomatik tespit et
+async function detectActiveBaseUrl(): Promise<void> {
+  try {
+    const promises = CANDIDATES.map(async (url) => {
+      await axios.get(`${url}/api/categories`, { timeout: 2000 });
+      return url;
+    });
+    const workingUrl = await Promise.any(promises);
+    activeBaseUrl = workingUrl;
+    client.defaults.baseURL = workingUrl;
+    console.log('✅ Backend bulundu:', workingUrl);
+  } catch {
+    console.warn('⚠️ Hiçbir backend bulunamadı, varsayılan kullanılıyor:', activeBaseUrl);
+  }
+}
+
+detectActiveBaseUrl();
+
 
 export const api = {
   fetchCategories: async (sinavTuru?: string): Promise<string[]> => {
@@ -79,5 +106,5 @@ export const api = {
     return data;
   },
 
-  getImageUrl: (path: string) => `${API_BASE}/images/${path}`
+  getImageUrl: (path: string) => `${activeBaseUrl}/images/${path}`
 };
