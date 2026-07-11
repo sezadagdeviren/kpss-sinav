@@ -64,7 +64,7 @@ async function tryMysqlConnect(host: string): Promise<boolean> {
 async function discoverMySQLHost(): Promise<string> {
   const isTermux = process.env.PREFIX !== undefined || process.cwd().includes('com.termux');
 
-  // 1. Termux'ta çalışıyorsak direkt localhost'a bağlan (en hızlısı)
+  // 1. Termux'ta çalışıyorsak doğrudan localhost'a bağlan
   if (isTermux) {
     const localOk = await tryMysqlConnect('127.0.0.1');
     if (localOk) return '127.0.0.1';
@@ -79,25 +79,29 @@ async function discoverMySQLHost(): Promise<string> {
     console.warn(`⚠️  Kayıtlı IP (${DB_HOST_HINT}) çevrimdışı, ağ taranıyor...`);
   }
 
-  // 3. Yerel ağda Termux MySQL'i ara (Port 3306)
+  // 3. Yerel ağda Termux MySQL'i ara (Soket limitlerini aşmamak için 32'lik gruplarla tara)
   const subnets = getLocalSubnets();
   if (subnets.length > 0) {
     console.log(`🔍 Termux MySQL aranıyor... Ağlar: ${subnets.join(', ')}.0/24`);
     const startTime = Date.now();
 
     for (const subnet of subnets) {
-      const scanPromises = Array.from({ length: 254 }, (_, i) => {
-        const ip = `${subnet}.${i + 1}`;
-        // Kendi IP'miz hariç diğer IP'leri hızlıca tara
-        return checkPort(ip, 3306, 400).then(open => open ? ip : null);
-      });
+      const openHosts: string[] = [];
+      const ips = Array.from({ length: 254 }, (_, i) => `${subnet}.${i + 1}`);
+      const chunkSize = 32;
 
-      const results = await Promise.all(scanPromises);
-      const openHosts = results.filter(Boolean) as string[];
+      for (let i = 0; i < ips.length; i += chunkSize) {
+        const chunk = ips.slice(i, i + chunkSize);
+        const scanPromises = chunk.map(async (ip) => {
+          const open = await checkPort(ip, 3306, 1200); // 1.2s timeout
+          return open ? ip : null;
+        });
+        const chunkResults = await Promise.all(scanPromises);
+        openHosts.push(...(chunkResults.filter(Boolean) as string[]));
+      }
 
       if (openHosts.length > 0) {
         for (const host of openHosts) {
-          // Localhost veya loopback değilse test et
           const ok = await tryMysqlConnect(host);
           if (ok) {
             const elapsed = Date.now() - startTime;
@@ -119,25 +123,21 @@ async function discoverMySQLHost(): Promise<string> {
     }
   }
 
-  // 4. PC'de son çare localhost'u dene
-  if (!isTermux) {
-    console.log('ℹ️  Ağda Termux bulunamadı, localhost (PC yerel) deneniyor...');
-    const localOk = await tryMysqlConnect('127.0.0.1');
-    if (localOk) return '127.0.0.1';
-  }
-
-  throw new Error('MySQL ne ağda ne de yerelde bulunamadı.');
+  throw new Error('Termux MySQL sunucusu yerel ağda bulunamadı.');
 }
 
 async function createSmartPool(): Promise<mysql.Pool> {
-  let host: string;
-  try {
-    host = await discoverMySQLHost();
-  } catch (err: any) {
-    console.error(`\n❌  MySQL bulunamadı: ${err.message}`);
-    console.error('    Termux açık ve MySQL çalışıyor mu? (Termux: mysqld_safe &)');
-    console.error('    Aynı WiFi ağında mısın?\n');
-    host = DB_HOST_HINT || '127.0.0.1'; // Crash etme, fallback ile devam
+  let host: string | null = null;
+
+  while (!host) {
+    try {
+      host = await discoverMySQLHost();
+    } catch (err: any) {
+      console.error(`\n❌  Termux MySQL bulunamadı: ${err.message}`);
+      console.error('    Aynı WiFi ağında mısınız? Telefonda Termux ve MySQL açık mı?');
+      console.error('    5 saniye içinde tekrar taranacak...\n');
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
   }
 
   console.log(`🗄️  MySQL bağlantısı kuruldu: ${host} → ${DB_NAME}`);
