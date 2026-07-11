@@ -2,15 +2,23 @@ import axios from 'axios';
 import { API_CONFIG } from '../config/constants';
 import type { Question, Stats } from '../types';
 
-// Tüm olası backend IP'leri - hangisi yanıt verirse ona bağlanır
-const CANDIDATES = [
-  'http://10.21.106.104:3002',  // Termux / Güncel WiFi IP
-  'http://192.168.1.101:3002',  // Eski Termux IP
-  'http://10.0.2.2:3002',       // Android Emülatör
-  'http://localhost:3002',       // Localhost (fallback)
+const IPS = [
+  '10.21.106.104', // Termux / WiFi
+  '192.168.1.101', // Eski Termux WiFi
+  '10.0.2.2',      // Android Emulator
+  '127.0.0.1',     // Localhost
+  'localhost'
 ];
+const PORTS = [3001, 3002, 3003, 3004, 3005];
 
-let activeBaseUrl = CANDIDATES[0];
+const CANDIDATES: string[] = [];
+IPS.forEach(ip => {
+  PORTS.forEach(port => {
+    CANDIDATES.push(`http://${ip}:${port}`);
+  });
+});
+
+let activeBaseUrl = `http://10.21.106.104:3001`;
 
 const client = axios.create({
   baseURL: activeBaseUrl,

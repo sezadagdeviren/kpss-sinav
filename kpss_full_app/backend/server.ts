@@ -6,7 +6,7 @@ import net from 'net';
 import os from 'os';
 
 const app = express();
-const port = 3002;
+let activePort = Number(process.env.PORT) || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -258,6 +258,9 @@ app.get('/api/favorites-by-year/:category', async (req, res) => {
   }
 });
 
+app.get('/api/ping', (req, res) => {
+  res.json({ pong: true, project: 'kpss_sinav' });
+});
 
 function getLocalIPs(): string[] {
   const interfaces = os.networkInterfaces();
@@ -273,9 +276,9 @@ function getLocalIPs(): string[] {
   return ips;
 }
 
-function isPortInUse(port: number): Promise<boolean> {
+function isPortInUse(p: number): Promise<boolean> {
   return new Promise((resolve) => {
-    const tester = net.createConnection({ port, host: '127.0.0.1' });
+    const tester = net.createConnection({ port: p, host: '127.0.0.1' });
     tester.once('connect', () => {
       tester.destroy();
       resolve(true); // Port is in use
@@ -286,40 +289,59 @@ function isPortInUse(port: number): Promise<boolean> {
   });
 }
 
-async function startServer() {
-  const inUse = await isPortInUse(port);
+// Portu işgal eden sunucunun bu projeye ait olup olmadığını kontrol et
+async function checkIsSameProject(checkPort: number): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 800);
+    const res = await fetch(`http://127.0.0.1:${checkPort}/api/ping`, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      const data = (await res.json()) as any;
+      return data && data.project === 'kpss_sinav';
+    }
+  } catch (e) {}
+  return false;
+}
 
-  if (inUse) {
-    console.error('\n' + '='.repeat(60));
-    console.error('⚠️  UYARI: Port 3001 zaten kullanımda!');
-    console.error('='.repeat(60));
-    console.error('Başka bir backend sunucusu çalışıyor olabilir.');
-    console.error('Lütfen önce diğer sunucuyu durdurun (Ctrl+C ile).');
-    console.error('\nEğer bu Termux\'ta çalışıyorsa:  Termux\'ta Ctrl+C yapın');
-    console.error('Eğer bu PC\'de çalışıyorsa:       PC terminalde Ctrl+C yapın');
-    console.error('='.repeat(60) + '\n');
-    process.exit(1);
+async function startServer() {
+  let inUse = await isPortInUse(activePort);
+
+  while (inUse) {
+    const isSame = await checkIsSameProject(activePort);
+    if (isSame) {
+      console.error('\n' + '='.repeat(60));
+      console.error(`⚠️  UYARI: Bu projenin backend'i (kpss_sinav) port ${activePort} üzerinde zaten çalışıyor!`);
+      console.error('='.repeat(60));
+      console.error('Lütfen önce diğer terminalde çalışan sunucuyu durdurun.');
+      console.error('='.repeat(60) + '\n');
+      process.exit(1);
+    }
+
+    // Başka projeyse sessizce bir sonraki portu dene
+    console.log(`ℹ️  Port ${activePort} başka bir proje tarafından kullanılıyor. Sonraki deneniyor...`);
+    activePort++;
+    inUse = await isPortInUse(activePort);
   }
 
-  const server = app.listen(port, '0.0.0.0', () => {
+  const server = app.listen(activePort, '0.0.0.0', () => {
     const localIPs = getLocalIPs();
     console.log('\n' + '='.repeat(60));
     console.log('✅  Backend başlatıldı!');
     console.log('='.repeat(60));
-    console.log(`📡  Dinleme: http://0.0.0.0:${port}`);
-    console.log(`🔗  Yerel erişim: http://localhost:${port}`);
+    console.log(`📡  Dinleme: http://0.0.0.0:${activePort}`);
+    console.log(`🔗  Yerel erişim: http://localhost:${activePort}`);
     localIPs.forEach(ip => {
-      console.log(`🌐  Ağ erişimi:   http://${ip}:${port}`);
+      console.log(`🌐  Ağ erişimi:   http://${ip}:${activePort}`);
     });
     console.log('='.repeat(60));
-    console.log('💡  Web uygulama bu IP\'lerden herhangi birine bağlanabilir.');
-    console.log(`⚠️   Sadece bir sunucu aynı anda çalıştırılabilir (port: ${port})`);
+    console.log('💡  Web uygulama veya mobil uygulama bu portu otomatik bulacaktır.');
     console.log('='.repeat(60) + '\n');
   });
 
   server.on('error', (err: any) => {
     if (err.code === 'EADDRINUSE') {
-      console.error(`\n⚠️  Port ${port} zaten kullanımda! Diğer sunucuyu durdurun.\n`);
+      console.error(`\n⚠️  Port ${activePort} zaten kullanımda!\n`);
       process.exit(1);
     } else {
       throw err;
