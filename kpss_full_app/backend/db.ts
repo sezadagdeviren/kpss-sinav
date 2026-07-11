@@ -123,21 +123,24 @@ async function discoverMySQLHost(): Promise<string> {
     }
   }
 
-  throw new Error('Termux MySQL sunucusu yerel ağda bulunamadı.');
+  // 4. PC'de son çare localhost'u dene (Termux yoksa yerel DB'ye bağlan)
+  if (!isTermux) {
+    console.log('ℹ️  Ağda Termux bulunamadı, localhost (PC yerel) deneniyor...');
+    const localOk = await tryMysqlConnect('127.0.0.1');
+    if (localOk) return '127.0.0.1';
+  }
+
+  throw new Error('Termux MySQL veya yerel MySQL sunucusu bulunamadı.');
 }
 
 async function createSmartPool(): Promise<mysql.Pool> {
-  let host: string | null = null;
-
-  while (!host) {
-    try {
-      host = await discoverMySQLHost();
-    } catch (err: any) {
-      console.error(`\n❌  Termux MySQL bulunamadı: ${err.message}`);
-      console.error('    Aynı WiFi ağında mısınız? Telefonda Termux ve MySQL açık mı?');
-      console.error('    5 saniye içinde tekrar taranacak...\n');
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-    }
+  let host: string;
+  try {
+    host = await discoverMySQLHost();
+  } catch (err: any) {
+    console.error(`\n❌ MySQL bulunamadı: ${err.message}`);
+    console.warn('⚠️  Termux çevrimdışı, yerel MySQL (127.0.0.1) fallback olarak kullanılıyor.\n');
+    host = '127.0.0.1';
   }
 
   console.log(`🗄️  MySQL bağlantısı kuruldu: ${host} → ${DB_NAME}`);
