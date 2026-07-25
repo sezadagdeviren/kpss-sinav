@@ -18,28 +18,74 @@ const handleResponse = async (res: Response) => {
 async function detectBackend() {
   const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
   const protocol = typeof window !== 'undefined' ? window.location.protocol : 'http:';
-  
-  // Try port 3001, 3002, 3003, 3004, 3005 dynamically
-  const ports = [3001, 3002, 3003, 3004, 3005];
-  for (const port of ports) {
-    try {
-      const url = `${protocol}//${hostname}:${port}`;
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 600);
-      const res = await fetch(`${url}/api/ping`, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.project === 'kpss_sinav') {
-          discoveredBaseUrl = url;
-          resolveInit(url);
-          console.log('✅ Web API Backend found on:', url);
-          return;
-        }
-      }
-    } catch (e) {}
+  const savedIp = typeof window !== 'undefined' ? localStorage.getItem('kpss_backend_ip') : null;
+
+  // Bilgisayarın bulunduğu alt ağ grubunu tespit edip 100-115 aralığını tara (Termux genellikle bu gruptadır)
+  let subnetBase = '192.168.1';
+  if (hostname.includes('.') && !hostname.startsWith('localhost') && !hostname.startsWith('127.0.0.')) {
+    subnetBase = hostname.split('.').slice(0, 3).join('.');
   }
-  resolveInit(API_CONFIG.BASE_URL);
+
+  const ports = [3001, 3002, 3003, 3004, 3005];
+  const ips = [
+    hostname,
+    ...(savedIp ? [savedIp] : []),
+    '127.0.0.1',
+    'localhost',
+    '192.168.1.106', // Güncel Termux IP'si
+    '192.168.1.105',
+    '10.21.106.104',
+    '10.116.244.104'
+  ];
+
+  // Alt ağdaki olası IP'leri de listeye ekleyelim
+  for (let i = 100; i <= 115; i++) {
+    const ip = `${subnetBase}.${i}`;
+    if (!ips.includes(ip)) ips.push(ip);
+  }
+
+  // Benzersiz IP listesi oluştur
+  const uniqueIps = [...new Set(ips)];
+
+  // Paralel olarak ping at
+  const scanPromises: Promise<string>[] = [];
+  uniqueIps.forEach(ip => {
+    ports.forEach(port => {
+      const url = `${protocol}//${ip}:${port}`;
+      scanPromises.push(
+        (async () => {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 600); // 600ms hızlı ping
+          const res = await fetch(`${url}/api/ping`, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.project === 'kpss_sinav') {
+              return url;
+            }
+          }
+          throw new Error('Not match');
+        })()
+      );
+    });
+  });
+
+  try {
+    const workingUrl = await Promise.any(scanPromises);
+    discoveredBaseUrl = workingUrl;
+    
+    // Bulunan IP'yi localStorage'a kaydet (bir dahaki sefere anında bağlanır)
+    const urlObj = new URL(workingUrl);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('kpss_backend_ip', urlObj.hostname);
+    }
+
+    resolveInit(workingUrl);
+    console.log('✅ Web API Backend bulundu:', workingUrl);
+  } catch {
+    console.warn('⚠️ Hiçbir backend bulunamadı, varsayılan kullanılıyor:', discoveredBaseUrl);
+    resolveInit(API_CONFIG.BASE_URL);
+  }
 }
 
 detectBackend();

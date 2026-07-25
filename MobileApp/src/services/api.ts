@@ -3,12 +3,22 @@ import { API_CONFIG } from '../config/constants';
 import type { Question, Stats } from '../types';
 
 const IPS = [
-  '10.21.106.104', // Termux / WiFi
-  '192.168.1.101', // Eski Termux WiFi
+  '10.21.106.104',
+  '192.168.1.106', // Son Termux IP
+  '10.116.244.104',
   '10.0.2.2',      // Android Emulator
   '127.0.0.1',     // Localhost
   'localhost'
 ];
+
+const subnets = ['192.168.1', '10.21.106', '10.116.244'];
+subnets.forEach(subnet => {
+  for (let i = 100; i <= 115; i++) {
+    const ip = `${subnet}.${i}`;
+    if (!IPS.includes(ip)) IPS.push(ip);
+  }
+});
+
 const PORTS = [3001, 3002, 3003, 3004, 3005];
 
 const CANDIDATES: string[] = [];
@@ -18,7 +28,7 @@ IPS.forEach(ip => {
   });
 });
 
-let activeBaseUrl = `http://10.21.106.104:3001`;
+let activeBaseUrl = `http://localhost:3001`;
 
 const client = axios.create({
   baseURL: activeBaseUrl,
