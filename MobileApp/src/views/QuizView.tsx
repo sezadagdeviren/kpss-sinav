@@ -19,7 +19,8 @@ export default function QuizView({ route, navigation }: any) {
 
   const {
     questions, currentIdx, currentQuestion, loading, selectedAnswer,
-    handleAnswer, toggleFavorite, nextQuestion, prevQuestion, jumpToQuestion
+    handleAnswer, toggleFavorite, nextQuestion, prevQuestion, jumpToQuestion,
+    loadQuestions, setCurrentIdx,
   } = useQuiz({ category, year, sinavTuru });
 
   const { timer, setIsActive, resetTimer } = useTimer(true);
@@ -55,14 +56,29 @@ export default function QuizView({ route, navigation }: any) {
     }
   };
 
-  const resetProgress = async () => {
-    try {
-      await api.resetPool(category, year, sinavTuru);
-      resetTimer();
-    } catch (err) {
-      console.error('Reset error', err);
-      Alert.alert('Hata', 'İlerleme sıfırlanamadı.');
-    }
+  const resetProgress = () => {
+    Alert.alert(
+      'İlerlemeyi Sıfırla',
+      'Bu sınava ait tüm cevaplar ve ilerleme silinecek. Emin misiniz?',
+      [
+        { text: 'İptal', style: 'cancel' },
+        {
+          text: 'Sıfırla',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await api.resetPool(category, year, sinavTuru);
+              resetTimer();
+              setCurrentIdx(0);
+              await loadQuestions(); // Soruları sıfırlanmış haliyle yeniden yükle
+            } catch (err) {
+              console.error('Reset error', err);
+              Alert.alert('Hata', 'İlerleme sıfırlanamadı.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
@@ -111,8 +127,8 @@ export default function QuizView({ route, navigation }: any) {
               <TouchableOpacity onPress={nextQuestion} disabled={currentIdx >= questions.length - 1 || isDrawingMode} className="flex-[2] h-16 bg-slate-900 rounded-2xl items-center justify-center"><Text className="text-white font-bold">Sonraki Soru →</Text></TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={resetProgress} className="w-full py-2 bg-rose-500/10 rounded-lg mb-2">
-              <Text className="text-center text-rose-500 font-bold uppercase">Tüm İlerlemeyi Sıfırla</Text>
+            <TouchableOpacity onPress={resetProgress} className="w-full py-3 bg-rose-500/10 rounded-xl mb-2 border border-rose-500/20">
+              <Text className="text-center text-rose-500 font-bold uppercase text-xs tracking-widest">⚠️  Tüm İlerlemeyi Sıfırla</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-4 rounded-2xl border border-slate-100 mb-6 bg-slate-50">
               <Icon name={currentQuestion?.is_favorite ? "star" : "star-outline"} size={20} color={currentQuestion?.is_favorite ? "#f59e0b" : "#94a3b8"} />

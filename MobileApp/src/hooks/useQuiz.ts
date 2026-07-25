@@ -115,6 +115,6 @@ export function useQuiz({ category, year, sinavTuru, mode = 'exam', initialIdx =
   return {
     questions, currentIdx, currentQuestion, loading, selectedAnswer,
     handleAnswer, toggleFavorite, removeMistake, nextQuestion, prevQuestion, loadQuestions,
-    setCurrentIdx, jumpToQuestion, jumpToStart
+    setCurrentIdx, setSelectedAnswer, jumpToQuestion, jumpToStart,
   };
 }
