@@ -128,17 +128,17 @@ export default function QuizView({ route, navigation }: any) {
             </View>
 
             <TouchableOpacity onPress={resetProgress} className="w-full py-3 bg-rose-500/10 rounded-xl mb-2 border border-rose-500/20">
-              <Text className="text-center text-rose-500 font-bold uppercase text-xs tracking-widest">⚠️  Tüm İlerlemeyi Sıfırla</Text>
+              <Text className="text-center text-rose-500 font-bold uppercase text-xs tracking-widest"> Tüm İlerlemeyi Sıfırla</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={toggleFavorite} className="flex-row justify-center items-center py-4 rounded-2xl border border-slate-100 mb-6 bg-slate-50">
               <Icon name={currentQuestion?.is_favorite ? "star" : "star-outline"} size={20} color={currentQuestion?.is_favorite ? "#f59e0b" : "#94a3b8"} />
               <Text className={`font-black ml-2 text-xs uppercase ${currentQuestion?.is_favorite ? 'text-amber-500' : 'text-slate-400'}`}>{currentQuestion?.is_favorite ? '★ FAVORİ' : '☆ FAVORİ'}</Text>
             </TouchableOpacity>
 
-            {isAnswered && (
+            {currentQuestion?.cozum && (
               <View className="bg-slate-50 p-6 rounded-3xl border border-slate-100 mb-6">
                 <Text className="text-[10px] font-bold text-slate-900 mb-2 uppercase">Çözüm Analizi</Text>
-                <Text className="text-sm text-slate-600 leading-6">{currentQuestion?.cozum || 'Çözüm henüz eklenmemiş.'}</Text>
+                <Text className="text-sm text-slate-600 leading-6">{currentQuestion.cozum}</Text>
               </View>
             )}
           </View>

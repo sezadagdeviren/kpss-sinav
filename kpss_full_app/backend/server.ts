@@ -56,7 +56,7 @@ app.get('/api/questions/:category/:year', async (req, res) => {
       FROM questions q 
       LEFT JOIN user_activity ua ON q.id = ua.question_id 
       WHERE LOWER(q.kategori) = LOWER(?) AND q.yil = ? AND LOWER(q.sinav_turu) = LOWER(?)
-      ORDER BY q.soru_no
+      ORDER BY CAST(q.soru_no AS UNSIGNED), q.id ASC
     `, [category, year, sTuru]);
     res.json(rows);
   } catch (err) {
