@@ -20,9 +20,9 @@ export function AnswerPanel({
   return (
     <div className="flex gap-1.5 w-full">
       {['A', 'B', 'C', 'D', 'E'].map(choice => {
-        const isCorrect = choice === currentQuestion?.dogru_cevap;
+        const isCorrect = choice === currentQuestion?.dogru_cevap?.toUpperCase();
         const show = isQuestionSolved;
-        const myChoice = selectedAnswer || (currentQuestion?.status !== 'empty' && !isReview && !isFavoritesMode ? currentQuestion.user_choice : null);
+        const myChoice = (selectedAnswer || (currentQuestion?.status !== 'empty' ? currentQuestion.user_choice : null))?.toUpperCase();
 
         return (
           <button

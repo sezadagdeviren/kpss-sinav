@@ -64,9 +64,9 @@ export default function DrawingCanvas({ isDrawingMode, onPathsChange, initialPat
         <View style={StyleSheet.absoluteFill}>
           <Svg style={StyleSheet.absoluteFill}>
             {paths.map((path, index) => (
-              <Path key={index} d={path} stroke="#000" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              <Path key={index} d={path} stroke="#000" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             ))}
-            <Path ref={activePathRef} d="" stroke="#000" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <Path ref={activePathRef} d="" stroke="#000" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           </Svg>
         </View>
       </PanGestureHandler>

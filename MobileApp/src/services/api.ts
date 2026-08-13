@@ -2,49 +2,28 @@ import axios from 'axios';
 import { API_CONFIG } from '../config/constants';
 import type { Question, Stats } from '../types';
 
-const IPS = [
-  '10.21.106.104',
-  '192.168.1.106', // Son Termux IP
-  '10.116.244.104',
-  '10.0.2.2',      // Android Emulator
-  '127.0.0.1',     // Localhost
-  'localhost'
+
+
+// Hızlı test için aday sunucu adresleri
+const CANDIDATES = [
+  'http://10.0.2.2:3001',       // Android Emulator için öncelikli
+  'http://192.168.1.103:3001',  // Fiziksel cihazlar için öncelikli
+  'http://localhost:3001'       // Fallback
 ];
 
-const subnets = ['192.168.1', '10.21.106', '10.116.244'];
-subnets.forEach(subnet => {
-  for (let i = 100; i <= 115; i++) {
-    const ip = `${subnet}.${i}`;
-    if (!IPS.includes(ip)) IPS.push(ip);
-  }
-});
-
-const PORTS = [3001, 3002, 3003, 3004, 3005];
-
-const CANDIDATES: string[] = [];
-IPS.forEach(ip => {
-  PORTS.forEach(port => {
-    CANDIDATES.push(`http://${ip}:${port}`);
-  });
-});
-
-let activeBaseUrl = `http://localhost:3001`;
-
 const client = axios.create({
-  baseURL: activeBaseUrl,
   timeout: API_CONFIG.TIMEOUT,
 });
 
-// Polyfill-like implementation for Promise.any to prevent crashes on Hermes
+import { Platform } from 'react-native';
+
+// Polyfill-like Promise.any to avoid early rejects from closed IPs
 async function anyPromise<T>(promises: Promise<T>[]): Promise<T> {
-  if (Promise.any) {
-    return Promise.any(promises);
-  }
   return new Promise<T>((resolve, reject) => {
     let rejectedCount = 0;
     const errors: any[] = [];
     if (promises.length === 0) {
-      reject(new TypeError('All promises were rejected'));
+      reject(new Error('No promises provided'));
       return;
     }
     promises.forEach((p) => {
@@ -54,7 +33,7 @@ async function anyPromise<T>(promises: Promise<T>[]): Promise<T> {
           errors.push(err);
           rejectedCount++;
           if (rejectedCount === promises.length) {
-            reject(new TypeError('All promises were rejected'));
+            reject(new Error('All connections failed'));
           }
         }
       );
@@ -62,12 +41,13 @@ async function anyPromise<T>(promises: Promise<T>[]): Promise<T> {
   });
 }
 
-let resolveInit: (url: string) => void;
+// Arayüzlerin bekleme yapması için çözümlenecek Promise
+let resolveInit: (url: string) => void = () => {};
 const initPromise = new Promise<string>((resolve) => {
   resolveInit = resolve;
 });
 
-// Axios request interceptor: Auto-detection tamamlanana kadar tüm istekleri bekletir
+// Axios interceptor: IP tespiti tamamlanana kadar tüm istekleri kuyrukta bekletir
 client.interceptors.request.use(async (config) => {
   const finalBaseUrl = await initPromise;
   config.baseURL = finalBaseUrl;
@@ -76,24 +56,33 @@ client.interceptors.request.use(async (config) => {
   return Promise.reject(error);
 });
 
-// Uygulama açılışında aktif backend'i otomatik tespit et
-async function detectActiveBaseUrl(): Promise<void> {
+// Hızlıca hangi IP'nin aktif olduğunu tespit et
+(async () => {
   try {
     const promises = CANDIDATES.map(async (url) => {
-      await axios.get(`${url}/api/categories`, { timeout: 2000 });
+      // Zaman aşımını daha güvenli bir süreye (2.5 sn) çıkarıyoruz
+      await axios.get(`${url}/api/categories`, { timeout: 2500 });
       return url;
     });
-    const workingUrl = await anyPromise(promises);
-    activeBaseUrl = workingUrl;
-    resolveInit(workingUrl);
-    console.log('✅ Backend bulundu:', workingUrl);
-  } catch {
-    console.warn('⚠️ Hiçbir backend bulunamadı, varsayılan kullanılıyor:', activeBaseUrl);
-    resolveInit(activeBaseUrl);
+    
+    // İlk BAŞARILI dönen adresi al (Hatalı olanları es geç)
+    const fastestUrl = await anyPromise(promises);
+    client.defaults.baseURL = fastestUrl;
+    resolveInit(fastestUrl); // Bekleyen tüm istekleri yolla
+    console.log('✅ Aktif Backend IP Adresi Ayarlandı:', fastestUrl);
+  } catch (err) {
+    // Ping testi başarısız olursa platforma göre güvenli varsayılanı seç
+    const fallbackUrl = Platform.OS === 'android' 
+      ? 'http://10.0.2.2:3001' 
+      : 'http://192.168.1.103:3001';
+      
+    client.defaults.baseURL = fallbackUrl;
+    resolveInit(fallbackUrl); // Bekleyen tüm istekleri yolla
+    console.warn(`⚠️ Hızlı IP tespiti yapılamadı. Varsayılan IP kullanılıyor: ${fallbackUrl}`);
   }
-}
+})();
 
-detectActiveBaseUrl();
+
 
 
 export const api = {
@@ -166,5 +155,5 @@ export const api = {
     return data;
   },
 
-  getImageUrl: (path: string) => `${activeBaseUrl}/images/${path}`
+  getImageUrl: (path: string) => `${client.defaults.baseURL || 'http://192.168.1.103:3001'}/images/${path}`
 };

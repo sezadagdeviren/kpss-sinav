@@ -31,6 +31,8 @@ export function useQuiz({ category, year, isReview, isFavoritesMode, sinavTuru }
             String(q.yil).trim() === String(year).trim()
           );
         }
+        // Favorilerden açıldığında eski şık ve durum temizlenir — tekrar çözülebilsin
+        data = data.map(q => ({ ...q, status: null, user_choice: null }));
       } else if (isReview) {
         const allReview = await api.fetchReview('wrong', sinavTuru);
         if (category && year) {
@@ -41,7 +43,8 @@ export function useQuiz({ category, year, isReview, isFavoritesMode, sinavTuru }
         } else {
           data = allReview;
         }
-        data = data.map(q => ({ ...q, status: null }));
+        // Hata listesinden açıldığında eski şık ve durum temizlenir — tekrar çözülebilsin
+        data = data.map(q => ({ ...q, status: null, user_choice: null }));
       } else if (category && year) {
         data = await api.fetchQuestions(category, year, sinavTuru);
       }
@@ -66,6 +69,15 @@ export function useQuiz({ category, year, isReview, isFavoritesMode, sinavTuru }
   }, [category, year, isReview, isFavoritesMode, sinavTuru]);
 
   const currentQuestion = useMemo(() => questions[currentIdx], [questions, currentIdx]);
+
+  useEffect(() => {
+    if (currentQuestion) {
+      // Hata listesi ve favorilerde eski şık gösterilmez — her soru taze başlar
+      setSelectedAnswer((isReview || isFavoritesMode) ? null : (currentQuestion.user_choice || null));
+    } else {
+      setSelectedAnswer(null);
+    }
+  }, [currentIdx, currentQuestion]);
 
   // Actions
   const handleAnswer = async (choice: string) => {
@@ -127,8 +139,8 @@ export function useQuiz({ category, year, isReview, isFavoritesMode, sinavTuru }
   return {
     questions, currentIdx, currentQuestion, stats, loading, selectedAnswer,
     handleAnswer, toggleFavorite, removeMistake, 
-    nextQuestion: () => { if (currentIdx < questions.length - 1) { setCurrentIdx(i => i + 1); setSelectedAnswer(null); } },
-    prevQuestion: () => { if (currentIdx > 0) { setCurrentIdx(i => i - 1); setSelectedAnswer(null); } },
+    nextQuestion: () => { if (currentIdx < questions.length - 1) setCurrentIdx(i => i + 1); },
+    prevQuestion: () => { if (currentIdx > 0) setCurrentIdx(i => i - 1); },
     jumpToStart: () => jumpToQuestion(0),
     jumpToQuestion,
     refreshStats,

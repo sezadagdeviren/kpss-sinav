@@ -18,8 +18,8 @@ export function QuizAnswerPanel({
       <Text className="text-xs font-black text-slate-900 mb-3 uppercase text-center">--- CEVAP PANELİ ---</Text>
       <View className="flex-row justify-between" style={{ gap: 8 }}>
         {['A', 'B', 'C', 'D', 'E'].map((choice) => {
-          const isCorrect = choice === currentQuestion?.dogru_cevap;
-          const myChoice = selectedAnswer || currentQuestion?.user_choice;
+          const isCorrect = choice === currentQuestion?.dogru_cevap?.toUpperCase();
+          const myChoice = (selectedAnswer || currentQuestion?.user_choice)?.toUpperCase();
           
           let btn = "flex-1 h-16 bg-white border border-slate-200 rounded-2xl items-center justify-center shadow-sm";
           let txt = "text-2xl font-black text-slate-400";

@@ -22,6 +22,20 @@ export default function ReviewCategoryView({ mode = 'mistakes' }: ReviewCategory
     api.fetchCategories(sinavTuru).then(setCategories);
   }, [sinavTuru]);
 
+  const getSinavTuruColorClass = (turu: string) => {
+    const norm = turu.toLowerCase();
+    if (norm.includes('lisans') && !norm.includes('ön')) {
+      return 'bg-violet-500/10 text-violet-400 border border-violet-500/20';
+    }
+    if (norm.includes('önlisans')) {
+      return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+    }
+    if (norm.includes('ortaöğretim') || norm.includes('ortaogretim')) {
+      return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+    }
+    return 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20';
+  };
+
   return (
     <div className="view-container">
       <BackButton label="Anasayfa" />
@@ -34,7 +48,7 @@ export default function ReviewCategoryView({ mode = 'mistakes' }: ReviewCategory
           <p className="text-slate-500 font-semibold tracking-wide uppercase text-xs">
             {isFavorites ? 'Kaydettiğin Soruları Derslere Göre İncele' : 'Temizlemek İstediğin Dersi Seç'}
           </p>
-          <span className="inline-block mt-3 px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] uppercase tracking-widest font-black rounded-full">
+          <span className={`inline-block mt-3 px-3 py-1 text-[10px] uppercase tracking-widest font-black rounded-full ${getSinavTuruColorClass(sinavTuru)}`}>
             {sinavTuru}
           </span>
         </header>

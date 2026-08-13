@@ -3,9 +3,16 @@ import type { Question } from '../../types';
 
 interface QuestionDisplayProps {
   currentQuestion: Question;
+  questionTime?: number;
 }
 
-export function QuestionDisplay({ currentQuestion }: QuestionDisplayProps) {
+export function QuestionDisplay({ currentQuestion, questionTime = 0 }: QuestionDisplayProps) {
+  const formatSeconds = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden min-h-0">
       {/* Meta badges */}
@@ -29,6 +36,13 @@ export function QuestionDisplay({ currentQuestion }: QuestionDisplayProps) {
             {currentQuestion.alt_konu}
           </span>
         )}
+
+        {/* Soru Bazlı Süre Rozeti */}
+        <span className="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20 flex items-center gap-1">
+          <span>⏱️</span>
+          <span>{formatSeconds(questionTime)}</span>
+        </span>
+
         <span className="ml-auto text-[9px] font-black text-slate-600 tracking-widest">SORU {currentQuestion?.soru_no}</span>
       </div>
 

@@ -110,7 +110,12 @@ export default function YearsView({ route, navigation }: any) {
       <View className="px-8 pt-6 pb-2">
         <Text className="text-3xl font-black text-slate-900 tracking-tight">{category}</Text>
         <View className="flex-row items-center mt-1" style={{ gap: 8 }}>
-          <View className="bg-indigo-600 px-2.5 py-0.5 rounded-md">
+          <View className={`px-2.5 py-0.5 rounded-md ${
+            (sinavTuru || 'Lisans').toLowerCase().includes('lisans') && !(sinavTuru || 'Lisans').toLowerCase().includes('ön') ? 'bg-violet-600' :
+            (sinavTuru || 'Lisans').toLowerCase().includes('önlisans') ? 'bg-emerald-600' :
+            (sinavTuru || 'Lisans').toLowerCase().includes('ortaöğretim') || (sinavTuru || 'Lisans').toLowerCase().includes('ortaogretim') ? 'bg-amber-500' :
+            (sinavTuru || 'Lisans').toLowerCase().includes('ags') ? 'bg-fuchsia-600' : 'bg-indigo-600'
+          }`}>
             <Text className="text-[9px] font-black text-white uppercase">{sinavTuru || 'Lisans'}</Text>
           </View>
           <Text className="text-slate-400 text-xs font-bold uppercase tracking-widest">Sınav Geçmişi</Text>

@@ -4,7 +4,9 @@
   "main": "server.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn server.ts",
-    "migrate": "ts-node migrate.ts"
+    "migrate": "ts-node migrate.ts",
+    "sync": "ts-node sync_from_json.ts",
+    "compare": "ts-node compare_db.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

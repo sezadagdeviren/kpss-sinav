@@ -20,6 +20,23 @@ export default function HomeView() {
     api.fetchStats(undefined, undefined, selectedExamType).then(setStats);
   }, [selectedExamType]);
 
+  const getSinavTuruActiveColor = (type: string) => {
+    const norm = type.toLowerCase();
+    if (norm.includes('lisans') && !norm.includes('ön')) {
+      return 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/20 scale-105';
+    }
+    if (norm.includes('önlisans')) {
+      return 'bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-105';
+    }
+    if (norm.includes('ortaöğretim') || norm.includes('ortaogretim')) {
+      return 'bg-amber-600 border-amber-500 text-white shadow-lg shadow-amber-500/20 scale-105';
+    }
+    if (norm.includes('ags')) {
+      return 'bg-fuchsia-600 border-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/20 scale-105';
+    }
+    return 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-105';
+  };
+
   return (
     <div className="view-container">
       <div className="max-w-[1000px] mx-auto space-y-12 fade-in">
@@ -29,7 +46,7 @@ export default function HomeView() {
           </h1>
           <p className="text-slate-500 font-semibold tracking-wide uppercase text-xs">Profesyonel Çalışma Platformu</p>
         </header>
-
+ 
         {/* Sınav Türü Seçimi */}
         <div className="space-y-4">
           <h3 className="text-sm font-black text-slate-400 uppercase tracking-wider text-center sm:text-left">Sınav Türü Seçin</h3>
@@ -42,7 +59,7 @@ export default function HomeView() {
                   onClick={() => setSelectedExamType(type)}
                   className={`px-6 py-3 rounded-full font-black text-xs uppercase tracking-wider transition-all duration-300 border ${
                     isActive 
-                      ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-105' 
+                      ? getSinavTuruActiveColor(type) 
                       : 'glass-card border-white/5 text-slate-400 hover:text-slate-200'
                   }`}
                 >

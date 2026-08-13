@@ -71,11 +71,18 @@ export default function HomeView({ navigation }: any) {
           >
             {EXAM_TYPES.map((type) => {
               const isActive = selectedExamType === type;
+              const activeClass = 
+                type.toLowerCase().includes('lisans') && !type.toLowerCase().includes('ön') ? 'bg-violet-600 border-violet-600 shadow-md shadow-violet-100' :
+                type.toLowerCase().includes('önlisans') ? 'bg-emerald-600 border-emerald-600 shadow-md shadow-emerald-100' :
+                type.toLowerCase().includes('ortaöğretim') || type.toLowerCase().includes('ortaogretim') ? 'bg-amber-500 border-amber-500 shadow-md shadow-amber-100' :
+                type.toLowerCase().includes('ags') ? 'bg-fuchsia-600 border-fuchsia-600 shadow-md shadow-fuchsia-100' : 
+                'bg-indigo-600 border-indigo-600 shadow-md shadow-indigo-100';
+
               return (
                 <TouchableOpacity
                   key={type}
                   onPress={() => setSelectedExamType(type)}
-                  className={`px-5 py-2.5 rounded-full border ${isActive ? 'bg-indigo-600 border-indigo-600 shadow-md shadow-indigo-100' : 'bg-white border-slate-200'}`}
+                  className={`px-5 py-2.5 rounded-full border ${isActive ? activeClass : 'bg-white border-slate-200'}`}
                 >
                   <Text className={`font-black text-xs ${isActive ? 'text-white' : 'text-slate-600'}`}>
                     {type}

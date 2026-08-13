@@ -33,9 +33,13 @@ export function useQuiz({ category, year, sinavTuru, mode = 'exam', initialIdx =
       if (isFavoritesMode) {
         data = await api.fetchReview('favorites', sinavTuru);
         if (category && year) data = data.filter(q => q.kategori === category && q.yil.toString() === year);
+        // Favorilerden açıldığında eski şık temizlenir — tekrar çözülebilsin
+        data = data.map(q => ({ ...q, status: null, user_choice: null }));
       } else if (isReview) {
         data = await api.fetchReview('wrong', sinavTuru);
         if (category && year) data = data.filter(q => q.kategori === category && q.yil.toString() === year);
+        // Hata listesinden açıldığında eski şık temizlenir — tekrar çözülebilsin
+        data = data.map(q => ({ ...q, status: null, user_choice: null }));
       } else {
         data = await api.fetchQuestions(category!, year!, sinavTuru);
       }
@@ -54,6 +58,15 @@ export function useQuiz({ category, year, sinavTuru, mode = 'exam', initialIdx =
 
   const currentQuestion = useMemo(() => questions[currentIdx], [questions, currentIdx]);
 
+  useEffect(() => {
+    if (currentQuestion) {
+      // Hata listesi ve favorilerde eski şık gösterilmez — her soru taze başlar
+      setSelectedAnswer((isReview || isFavoritesMode) ? null : (currentQuestion.user_choice || null));
+    } else {
+      setSelectedAnswer(null);
+    }
+  }, [currentIdx, currentQuestion, isReview, isFavoritesMode]);
+
   const handleAnswer = async (choice: string) => {
     if (!currentQuestion || selectedAnswer) return;
     
@@ -61,19 +74,30 @@ export function useQuiz({ category, year, sinavTuru, mode = 'exam', initialIdx =
     const status = choice === currentQuestion.dogru_cevap ? 'correct' : 'wrong';
     
     const updated = [...questions];
-    updated[currentIdx].status = status;
-    updated[currentIdx].user_choice = choice;
+    updated[currentIdx] = { ...updated[currentIdx], status, user_choice: choice };
     setQuestions(updated);
     
-    api.updateActivity(currentQuestion.id, status, undefined, choice).catch(console.error);
+    // Hata listesi ve favorilerde sadece UI güncellenir, DB'ye yazılmaz
+    if (!isReview && !isFavoritesMode) {
+      api.updateActivity(currentQuestion.id, status, undefined, choice).catch(console.error);
+    }
   };
 
   const toggleFavorite = async () => {
     if (!currentQuestion) return;
     const newState = !currentQuestion.is_favorite;
     const updated = [...questions];
-    updated[currentIdx].is_favorite = newState;
-    setQuestions(updated);
+    updated[currentIdx] = { ...updated[currentIdx], is_favorite: newState };
+    
+    // Favoriler modundayken favori kaldırılırsa listeden de çıkar
+    if (isFavoritesMode && !newState) {
+      const filtered = updated.filter(q => q.id !== currentQuestion.id);
+      setQuestions(filtered);
+      if (currentIdx >= filtered.length) setCurrentIdx(Math.max(0, filtered.length - 1));
+      setSelectedAnswer(null);
+    } else {
+      setQuestions(updated);
+    }
     api.updateActivity(currentQuestion.id, undefined, newState).catch(console.error);
   };
 
