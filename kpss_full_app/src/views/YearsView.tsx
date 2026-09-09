@@ -24,9 +24,11 @@ export default function YearsView({ mode }: YearsViewProps) {
   const [years, setYears] = useState<string[]>([]);
   const [countsPerYear, setCountsPerYear] = useState<Record<string, number>>({});
   const [examSummaries, setExamSummaries] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (category) {
+      setLoading(true);
       console.log(`📡 Fetching data for category: ${category}, mode: ${actualMode}, sinavTuru: ${sinavTuru}`);
       if (isHataMerkezi) {
         api.fetchMistakesByYear(category, sinavTuru).then(data => {
@@ -34,22 +36,24 @@ export default function YearsView({ mode }: YearsViewProps) {
           const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [String(curr.yil)]: Number(curr.count) }), {});
           setCountsPerYear(mapping);
           setYears(data.map((d: any) => d.yil.toString()));
-        });
+        }).finally(() => setLoading(false));
       } else if (isFavorites) {
         api.fetchFavoritesByYear(category, sinavTuru).then(data => {
           console.log('📝 Favorites Data:', data);
           const mapping = data.reduce((acc: any, curr: any) => ({ ...acc, [String(curr.yil)]: Number(curr.count) }), {});
           setCountsPerYear(mapping);
           setYears(data.map((d: any) => d.yil.toString()));
-        });
+        }).finally(() => setLoading(false));
       } else {
-        api.fetchYears(category, sinavTuru).then(loadedYears => {
-          setYears(loadedYears);
-        });
-        api.fetchExamSummaries(category, sinavTuru).then(data => {
-          console.log('📝 Exam Summaries:', data);
-          setExamSummaries(data);
-        });
+        Promise.all([
+          api.fetchYears(category, sinavTuru).then(loadedYears => {
+            setYears(loadedYears);
+          }),
+          api.fetchExamSummaries(category, sinavTuru).then(data => {
+            console.log('📝 Exam Summaries:', data);
+            setExamSummaries(data);
+          })
+        ]).finally(() => setLoading(false));
       }
     }
   }, [category, actualMode, sinavTuru]);
@@ -92,23 +96,47 @@ export default function YearsView({ mode }: YearsViewProps) {
           </span>
         </header>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {years.map(y => {
-            const count = countsPerYear[y];
-            const summary = examSummaries.find(s => s.yil === y || String(s.yil) === String(y));
+        {loading ? (
+          <div className="text-center py-12 text-indigo-400 font-bold tracking-widest animate-pulse">
+            YÜKLENİYOR...
+          </div>
+        ) : years.length === 0 && (isHataMerkezi || isFavorites) ? (
+          <div className="glass-card rounded-3xl p-12 text-center space-y-4 max-w-md mx-auto border border-white/10 shadow-2xl">
+            <div className="text-5xl">🎉</div>
+            <h3 className="text-xl font-black text-white">
+              {isFavorites ? 'Favori Soru Kalmadı' : 'Hata Sorusu Kalmadı'}
+            </h3>
+            <p className="text-xs text-slate-400 font-medium leading-relaxed">
+              {isFavorites 
+                ? `"${category}" dersine ait favorilere eklenmiş soru bulunmuyor.` 
+                : `Tebrikler! "${category}" dersindeki tüm hatalı soruları temizlediniz.`}
+            </p>
+            <button 
+              onClick={() => navigate(`${isFavorites ? '/favorilerim' : '/hata-merkezi'}?sinav_turu=${encodeURIComponent(sinavTuru)}`)}
+              className="mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20"
+            >
+              {isFavorites ? '← Favorilerime Dön' : '← Hata Merkezine Dön'}
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {years.map(y => {
+              const count = countsPerYear[y];
+              const summary = examSummaries.find(s => s.yil === y || String(s.yil) === String(y));
 
-            return (
-              <SelectionYearCard 
-                key={y}
-                year={y}
-                onClick={() => navigate(getTargetUrl(y))}
-                count={isHataMerkezi || isFavorites ? (count || 0) : undefined}
-                countColor={isFavorites ? 'amber' : 'rose'}
-                summary={actualMode === 'exam' ? summary : undefined}
-              />
-            );
-          })}
-        </div>
+              return (
+                <SelectionYearCard 
+                  key={y}
+                  year={y}
+                  onClick={() => navigate(getTargetUrl(y))}
+                  count={isHataMerkezi || isFavorites ? (count || 0) : undefined}
+                  countColor={isFavorites ? 'amber' : 'rose'}
+                  summary={actualMode === 'exam' ? summary : undefined}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

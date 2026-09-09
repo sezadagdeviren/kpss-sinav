@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useQuiz } from '../hooks/useQuiz';
 import { useTimer } from '../hooks/useTimer';
@@ -16,6 +16,7 @@ import { JumpToStartButton } from '../components/common/JumpToStartButton';
 export default function QuizView() {
   const { category, year } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
   const sinavTuru = queryParams.get('sinav_turu') || 'Lisans';
@@ -259,7 +260,63 @@ export default function QuizView() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Soru listesi boşaldığında (hata veya favori silindiğinde) otomatik geriye dön
+  useEffect(() => {
+    if (!loading && questions.length === 0 && (isReview || isFavoritesMode)) {
+      const timer = setTimeout(() => {
+        if (window.history.length > 1 && window.history.state?.idx > 0) {
+          navigate(-1);
+        } else {
+          const fallbackPath = isFavoritesMode 
+            ? (category ? `/favorilerim/${category}` : '/favorilerim') 
+            : (category ? `/hata-merkezi/${category}` : '/hata-merkezi');
+          navigate(`${fallbackPath}?sinav_turu=${encodeURIComponent(sinavTuru)}`, { replace: true });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, questions.length, isReview, isFavoritesMode, category, sinavTuru, navigate]);
+
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-950 text-indigo-400 font-extrabold tracking-widest animate-pulse">KPSS HUB YÜKLENİYOR...</div>;
+
+  if (questions.length === 0) {
+    return (
+      <div className="min-h-screen w-full bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <div className="glass-card max-w-md w-full p-8 rounded-3xl border border-white/10 space-y-6 shadow-2xl">
+          <div className="w-16 h-16 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+            🎉
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-white">Soru Kalmadı</h2>
+            <p className="text-sm text-slate-400 font-medium">
+              {isReview 
+                ? 'Hata listenizde gösterilecek soru kalmadı. Önceki sayfaya yönlendiriliyorsunuz...' 
+                : isFavoritesMode 
+                  ? 'Favori listenizde gösterilecek soru kalmadı. Önceki sayfaya yönlendiriliyorsunuz...' 
+                  : 'Bu bölümde gösterilecek soru bulunamadı.'}
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              if (window.history.length > 1 && window.history.state?.idx > 0) {
+                navigate(-1);
+              } else {
+                const fallbackPath = isFavoritesMode 
+                  ? (category ? `/favorilerim/${category}` : '/favorilerim') 
+                  : isReview 
+                    ? (category ? `/hata-merkezi/${category}` : '/hata-merkezi') 
+                    : (category ? `/ders/${category}` : '/');
+                navigate(`${fallbackPath}?sinav_turu=${encodeURIComponent(sinavTuru)}`, { replace: true });
+              }
+            }}
+            className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20"
+          >
+            ← Geri Dön
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-full bg-slate-950 flex flex-col font-sans relative overflow-hidden">
