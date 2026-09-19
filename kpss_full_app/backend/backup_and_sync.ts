@@ -111,7 +111,7 @@ async function sync(conn: any): Promise<void> {
   console.log(`   ${items.length.toLocaleString()} kayıt yüklendi.\n`);
 
   const UPDATABLE = ['dogru_cevap', 'cozum', 'konu', 'alt_konu', 'zorluk_seviyesi'] as const;
-  let updated = 0, alreadyCorrect = 0, notFound = 0, noImage = 0;
+  let updated = 0, inserted = 0, alreadyCorrect = 0, notFound = 0, noImage = 0;
   const fieldCounts: Record<string, number> = {};
   for (const f of UPDATABLE) fieldCounts[f] = 0;
   const notFoundList: string[] = [];
@@ -130,8 +130,44 @@ async function sync(conn: any): Promise<void> {
     );
 
     if (rows.length === 0) {
-      notFound++;
-      if (notFoundList.length < 20) notFoundList.push(item.soru_resmi);
+      // Zorunlu alanlar: yil, soru_no, dogru_cevap, kategori, soru_resmi, sinav_turu
+      const reqYil = normalize(item.yil);
+      const reqSoruNo = item.soru_no ? String(item.soru_no).trim() : '';
+      const reqDogruCevap = normalizeAnswer(item.dogru_cevap);
+      const reqKategori = normalize(item.kategori);
+      const reqSoruResmi = normalize(item.soru_resmi);
+      const reqSinavTuru = normalize(item.sinav_turu) || 'Lisans';
+
+      if (reqYil && reqSoruNo && reqDogruCevap && reqKategori && reqSoruResmi && reqSinavTuru) {
+        await conn.query(
+          `INSERT INTO questions (yil, soru_no, dogru_cevap, kategori, konu, alt_konu, sinav_turu, zorluk_seviyesi, cozum, soru_resmi)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+           ON DUPLICATE KEY UPDATE
+             dogru_cevap = VALUES(dogru_cevap),
+             kategori = VALUES(kategori),
+             konu = VALUES(konu),
+             alt_konu = VALUES(alt_konu),
+             zorluk_seviyesi = VALUES(zorluk_seviyesi),
+             cozum = VALUES(cozum),
+             soru_resmi = VALUES(soru_resmi)`,
+          [
+            reqYil,
+            parseInt(reqSoruNo, 10),
+            reqDogruCevap,
+            reqKategori,
+            normalize(item.konu),
+            normalize(item.alt_konu),
+            reqSinavTuru,
+            normalize(item.zorluk_seviyesi) || 'Orta',
+            normalize(item.cozum),
+            reqSoruResmi
+          ]
+        );
+        inserted++;
+      } else {
+        notFound++;
+        if (notFoundList.length < 20) notFoundList.push(`${item.soru_resmi} (Eksik zorunlu alanlar)`);
+      }
       continue;
     }
 
@@ -191,6 +227,7 @@ async function sync(conn: any): Promise<void> {
   console.log('📊 SENKRONIZASYON RAPORU');
   console.log('═'.repeat(60));
   console.log(`✅ Güncellenen          : ${updated.toLocaleString()}`);
+  console.log(`➕ Yeni Eklenen         : ${inserted.toLocaleString()}`);
   console.log(`⏭️  Zaten doğru (atlandı): ${alreadyCorrect.toLocaleString()}`);
   console.log(`❓ DB'de bulunamayan    : ${notFound.toLocaleString()}`);
   console.log(`🖼️  Resim yolu eksik    : ${noImage.toLocaleString()}`);

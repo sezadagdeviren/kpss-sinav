@@ -38,3 +38,4 @@ kpss_full_app/node_modules/
 # Editor
 .vscode/settings.json
 *.log
+*.sql

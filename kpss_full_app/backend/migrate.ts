@@ -11,7 +11,7 @@ async function migrate() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS questions (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        yil YEAR NOT NULL,
+        yil VARCHAR(20) NOT NULL,
         soru_no INT NOT NULL,
         dogru_cevap VARCHAR(10) NOT NULL,
         kategori VARCHAR(50) NOT NULL,

@@ -4,7 +4,7 @@ import { api } from '../services/api';
 import type { Stats } from '../types';
 import { SelectionCategoryCard } from '../components/SelectionComponents';
 
-const EXAM_TYPES = ['Lisans', 'Önlisans', 'Ortaöğretim', 'AGS'];
+const EXAM_TYPES = ['Lisans', 'Önlisans', 'Ortaöğretim', 'AGS', 'ALES'];
 
 export default function HomeView() {
   const navigate = useNavigate();
@@ -33,6 +33,9 @@ export default function HomeView() {
     }
     if (norm.includes('ags')) {
       return 'bg-fuchsia-600 border-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/20 scale-105';
+    }
+    if (norm.includes('ales')) {
+      return 'bg-rose-600 border-rose-500 text-white shadow-lg shadow-rose-500/20 scale-105';
     }
     return 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-105';
   };

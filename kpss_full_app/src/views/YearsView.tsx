@@ -78,6 +78,9 @@ export default function YearsView({ mode }: YearsViewProps) {
     if (norm.includes('ortaöğretim') || norm.includes('ortaogretim')) {
       return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
     }
+    if (norm.includes('ales')) {
+      return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+    }
     return 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20';
   };
 
