@@ -32,12 +32,23 @@ function scanDir(currentDir, relativePath, results) {
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.png')) {
       const parts = relPath.split(path.sep);
 
-      // Örnek relPath:
-      // Lisans/Tarih/2025/soru_1.png -> sinav_turu: Lisans, kategori: Tarih, yil: 2025
-      // Ales/2026/2026-1/Sozel/Soru_1.png -> sinav_turu: ALES, yil: 2026-1, kategori: Sozel
-      // DGS/Sozel/2024/soru_1.png -> sinav_turu: DGS, kategori: Sozel, yil: 2024
-      // Ekpss/Lisans/Tarih/2024/soru_1.png -> sinav_turu: Ekpss-Lisans, kategori: Tarih
-      // Hakimlik/2024/soru_1.png -> sinav_turu: Hakimlik, yil: 2024
+      /**
+       * Klasör yapıları:
+       * Lisans/Ders/Yil/Soru_X.png           -> parts.length=4
+       * Ortaogretim/Ders/Yil/Soru_X.png      -> parts.length=4
+       * Onlisans/Ders/Yil/Soru_X.png         -> parts.length=4
+       * AGS/Ders/Yil/Soru_X.png              -> parts.length=4
+       * 
+       * Ales/YIL/SINAV_ADI/KATEGORI/Soru_X.png -> parts.length=5
+       * DGS/KATEGORI/YIL/Soru_X.png            -> parts.length=4
+       * 
+       * YENİ FORMAT (yıl önce, ders sonra):
+       * Adalet/YIL/DERS/Soru_X.png           -> parts.length=4
+       * Hakimlik/YIL/DERS/Soru_X.png         -> parts.length=4
+       * Kaymakamlık/YIL/DERS/Soru_X.png      -> parts.length=4
+       * Sayıştay/YIL/DERS/Soru_X.png         -> parts.length=4
+       * Ekpss/Lisans/YIL/DERS/Soru_X.png     -> parts.length=5
+       */
 
       let sinavTuru = parts[0];
       let kategori = 'Genel';
@@ -48,36 +59,48 @@ function scanDir(currentDir, relativePath, results) {
       if (!matchSoruNo) continue;
       const soruNo = matchSoruNo[0];
 
-      if (sinavTuru.toLowerCase() === 'ales') {
+      const normTur = sinavTuru.toLowerCase();
+
+      if (normTur === 'ales') {
+        // Ales/2026/2026-1/Sozel/Soru_1.png -> sinav_turu: ALES, yil: 2026-1, kategori: Sozel
         sinavTuru = 'ALES';
         if (parts.length >= 4) {
           kategori = parts[parts.length - 2];
           yil = parts[parts.length - 3];
         }
-      } else if (sinavTuru.toLowerCase() === 'dgs') {
+      } else if (normTur === 'dgs') {
+        // DGS/Sozel/2024/soru_1.png
         sinavTuru = 'DGS';
         if (parts.length >= 4) {
           kategori = parts[1];
           yil = parts[2];
         }
-      } else if (sinavTuru.toLowerCase() === 'ekpss') {
-        // Ekpss/Lisans/Tarih/2024/soru_1.png -> sinav_turu: Ekpss-Lisans
+      } else if (normTur === 'ekpss') {
+        // Ekpss/Lisans/2024/Ders/soru_1.png -> sinav_turu: Ekpss-Lisans, yil: 2024, kategori: Ders
         if (parts.length >= 5) {
           sinavTuru = `Ekpss-${parts[1]}`;
-          kategori = parts[2];
-          yil = parts[3];
+          yil = parts[2];
+          kategori = parts[3];
         } else if (parts.length >= 4) {
           sinavTuru = `Ekpss-${parts[1]}`;
+          yil = parts[2];
+          kategori = 'Genel';
+        }
+      } else if (['adalet', 'hakimlik', 'kaymakamlık', 'kaymakamlik', 'sayıştay', 'sayistay'].includes(normTur)) {
+        // YENİ FORMAT: TürAdı/YIL/DERS/Soru_X.png
+        if (parts.length >= 4) {
+          yil = parts[1];
           kategori = parts[2];
+        } else if (parts.length === 3) {
+          yil = parts[1];
+          kategori = 'Genel';
         }
       } else {
-        // Klasik yapı veya Adalet / Hakimlik / Kaymakamlık / Sayıştay / Lisans / Onlisans / Ortaogretim / AGS
+        // Klasik: Lisans/Ders/Yil/Soru_X.png veya AGS/Ders/Yil/...
         if (parts.length === 4) {
-          // Örn: Lisans/Tarih/2025/soru_1.png
           kategori = parts[1];
           yil = parts[2];
         } else if (parts.length === 3) {
-          // Örn: Hakimlik/2024/soru_1.png
           kategori = 'Genel Kültür';
           yil = parts[1];
         } else if (parts.length >= 5) {
@@ -102,6 +125,23 @@ function scanDir(currentDir, relativePath, results) {
           if (cevaplarMap[k]) {
             dogruCevap = cevaplarMap[k].trim().toUpperCase();
             break;
+          }
+        }
+
+        // cevaplar.json iç içe (ders bazlı) ise
+        if (!dogruCevap && typeof cevaplarMap === 'object') {
+          for (const dersKey of Object.keys(cevaplarMap)) {
+            if (typeof cevaplarMap[dersKey] === 'object' &&
+                (dersKey.toLowerCase() === kategori.toLowerCase() || parts.includes(dersKey))) {
+              const innerMap = cevaplarMap[dersKey];
+              for (const k of keysToTry) {
+                if (innerMap[k]) {
+                  dogruCevap = innerMap[k].trim().toUpperCase();
+                  break;
+                }
+              }
+              if (dogruCevap) break;
+            }
           }
         }
       }
@@ -133,6 +173,25 @@ function run() {
 
   console.log(`✅ Taramada toplam ${scannedQuestions.length.toLocaleString()} soru resmi bulundu.`);
 
+  // Örnek kontrol — her sınav türü için 1 örnek göster
+  const samplePerType = {};
+  for (const q of scannedQuestions) {
+    if (!samplePerType[q.sinav_turu]) samplePerType[q.sinav_turu] = q;
+  }
+  console.log('\n📋 Sınav türü bazında örnekler:');
+  for (const [tur, q] of Object.entries(samplePerType)) {
+    console.log(`  [${tur}] yil=${q.yil}, kategori=${q.kategori}, resmi=${q.soru_resmi}`);
+  }
+  console.log('');
+
+  // SORU: Yıl alanı gerçekten 4 haneli rakam mı?
+  const badYil = scannedQuestions.filter(q => !/^[0-9]{4}(-\d+)?$/.test(String(q.yil)));
+  if (badYil.length > 0) {
+    console.warn(`⚠️  Yıl alanı hatalı ${badYil.length} kayıt var. Örnek:`, badYil[0]);
+  } else {
+    console.log('✅ Tüm yıl alanları doğru formatında.');
+  }
+
   if (!fs.existsSync(DATA_JSON_PATH)) {
     console.error('❌ data.json bulunamadı');
     process.exit(1);
@@ -153,11 +212,12 @@ function run() {
 
   for (const q of scannedQuestions) {
     if (existingMap.has(q.soru_resmi)) {
+      // Mevcut kaydı güncelle (yil/kategori yanlışsa düzelt)
       const current = existingMap.get(q.soru_resmi);
-      if (!current.sinav_turu) current.sinav_turu = q.sinav_turu;
-      if (!current.dogru_cevap || current.dogru_cevap === '') current.dogru_cevap = q.dogru_cevap;
-      if (!current.yil) current.yil = q.yil;
-      if (!current.kategori) current.kategori = q.kategori;
+      current.sinav_turu = q.sinav_turu;
+      current.dogru_cevap = q.dogru_cevap || current.dogru_cevap;
+      current.yil = q.yil;
+      current.kategori = q.kategori;
       updated++;
     } else {
       existingData.push(q);
