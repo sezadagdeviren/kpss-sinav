@@ -13,11 +13,14 @@ const DATA_JSON = '/Users/seza/Desktop/kpss_sinav/data.json';
 async function main() {
   const data = JSON.parse(fs.readFileSync(DATA_JSON, 'utf-8'));
   
-  // Sadece veritabanında olmayan yeni türleri aktar
-  const NEW_TYPES = ['Adalet', 'Ekpss-Lisans', 'Ekpss-Onlisans', 'Ekpss-Ortaogretim', 
-                     'Hakimlik', 'Kaymakamlık', 'Sayıştay', 'ALES'];
+  // Tüm türleri yeniden aktar (yıl/kategori karışıklığını düzeltmek için)
+  const ALL_TYPES = [
+    'Lisans', 'Onlisans', 'Ortaogretim', 'AGS', 'ALES', 'DGS',
+    'Adalet', 'Ekpss-Lisans', 'Ekpss-Onlisans', 'Ekpss-Ortaogretim',
+    'Hakimlik', 'Kaymakamlık', 'Sayıştay'
+  ];
   
-  const newQuestions = data.filter(q => NEW_TYPES.some(t => 
+  const newQuestions = data.filter(q => ALL_TYPES.some(t => 
     q.sinav_turu?.toLowerCase() === t.toLowerCase()
   ));
   
@@ -57,8 +60,8 @@ async function main() {
     }
   }
 
-  // Önce mevcut yeni türleri sil (temiz aktarım için)
-  for (const t of NEW_TYPES) {
+  // Önce mevcut tüm türleri sil (temiz aktarım için)
+  for (const t of ALL_TYPES) {
     await connection.execute(
       'DELETE FROM questions WHERE LOWER(sinav_turu) = LOWER(?)',
       [t]
@@ -83,7 +86,10 @@ async function main() {
       await connection.execute(
         `INSERT INTO questions 
          (sinav_turu, kategori, yil, soru_no, soru_resmi, dogru_cevap)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE 
+           soru_resmi = VALUES(soru_resmi),
+           dogru_cevap = VALUES(dogru_cevap)`,
         [q.sinav_turu, kategori, yil, soru_no, soru_resmi, dogru_cevap]
       );
       inserted++;
