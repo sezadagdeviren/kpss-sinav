@@ -4,7 +4,11 @@ import { api } from '../services/api';
 import type { Stats } from '../types';
 import { SelectionCategoryCard } from '../components/SelectionComponents';
 
-const EXAM_TYPES = ['Lisans', 'Önlisans', 'Ortaöğretim', 'AGS', 'ALES'];
+const EXAM_TYPES = [
+  'Lisans', 'Önlisans', 'Ortaöğretim', 'AGS', 'ALES', 'DGS',
+  'Adalet', 'Ekpss-Lisans', 'Ekpss-Onlisans', 'Ekpss-Ortaogretim',
+  'Hakimlik', 'Kaymakamlık', 'Sayıştay'
+];
 
 export default function HomeView() {
   const navigate = useNavigate();
@@ -36,6 +40,24 @@ export default function HomeView() {
     }
     if (norm.includes('ales')) {
       return 'bg-rose-600 border-rose-500 text-white shadow-lg shadow-rose-500/20 scale-105';
+    }
+    if (norm.includes('dgs')) {
+      return 'bg-cyan-600 border-cyan-500 text-white shadow-lg shadow-cyan-500/20 scale-105';
+    }
+    if (norm.includes('adalet')) {
+      return 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20 scale-105';
+    }
+    if (norm.includes('ekpss')) {
+      return 'bg-teal-600 border-teal-500 text-white shadow-lg shadow-teal-500/20 scale-105';
+    }
+    if (norm.includes('hakimlik')) {
+      return 'bg-orange-600 border-orange-500 text-white shadow-lg shadow-orange-500/20 scale-105';
+    }
+    if (norm.includes('kaymakamlık') || norm.includes('kaymakamlik')) {
+      return 'bg-lime-600 border-lime-500 text-white shadow-lg shadow-lime-500/20 scale-105';
+    }
+    if (norm.includes('sayıştay') || norm.includes('sayistay')) {
+      return 'bg-pink-600 border-pink-500 text-white shadow-lg shadow-pink-500/20 scale-105';
     }
     return 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-105';
   };

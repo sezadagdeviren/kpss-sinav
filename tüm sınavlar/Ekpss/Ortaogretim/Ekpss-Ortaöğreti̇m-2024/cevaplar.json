@@ -1,0 +1,74 @@
+{
+  "Turkce": {
+    "Soru_1": "D",
+    "Soru_2": "",
+    "Soru_3": "E",
+    "Soru_4": "B",
+    "Soru_5": "D",
+    "Soru_6": "B",
+    "Soru_7": "E",
+    "Soru_8": "C",
+    "Soru_9": "D",
+    "Soru_10": "B",
+    "Soru_11": "C",
+    "Soru_12": "A",
+    "Soru_13": "A",
+    "Soru_14": "B",
+    "Soru_15": "C"
+  },
+  "Matematik": {
+    "Soru_1": "A",
+    "Soru_2": "E",
+    "Soru_3": "D",
+    "Soru_4": "B",
+    "Soru_5": "B",
+    "Soru_6": "C",
+    "Soru_7": "E",
+    "Soru_8": "C",
+    "Soru_9": "D",
+    "Soru_10": "B",
+    "Soru_11": "D",
+    "Soru_12": "B",
+    "Soru_13": "A",
+    "Soru_14": "C",
+    "Soru_15": "C"
+  },
+  "Tarih": {
+    "Soru_1": "D",
+    "Soru_2": "E",
+    "Soru_3": "B",
+    "Soru_4": "C",
+    "Soru_5": "A",
+    "Soru_6": "C",
+    "Soru_7": "A",
+    "Soru_8": "D",
+    "Soru_9": "D",
+    "Soru_10": "A",
+    "Soru_11": "B",
+    "Soru_12": "E",
+    "Soru_13": "A"
+  },
+  "Cografya": {
+    "Soru_1": "D",
+    "Soru_2": "A",
+    "Soru_3": "A",
+    "Soru_4": "C",
+    "Soru_5": "D"
+  },
+  "Vatandaslik": {
+    "Soru_1": "A",
+    "Soru_2": "",
+    "Soru_3": "E",
+    "Soru_4": "D",
+    "Soru_5": "E",
+    "Soru_6": "C"
+  },
+  "guncelbilgiler": {
+    "Soru_1": "C",
+    "Soru_2": "D",
+    "Soru_3": "A",
+    "Soru_4": "E",
+    "Soru_5": "B",
+    "Soru_6": "C"
+  }
+}

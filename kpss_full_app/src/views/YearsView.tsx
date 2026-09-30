@@ -81,6 +81,24 @@ export default function YearsView({ mode }: YearsViewProps) {
     if (norm.includes('ales')) {
       return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
     }
+    if (norm.includes('dgs')) {
+      return 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20';
+    }
+    if (norm.includes('adalet')) {
+      return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+    }
+    if (norm.includes('ekpss')) {
+      return 'bg-teal-500/10 text-teal-400 border border-teal-500/20';
+    }
+    if (norm.includes('hakimlik')) {
+      return 'bg-orange-500/10 text-orange-400 border border-orange-500/20';
+    }
+    if (norm.includes('kaymakamlık') || norm.includes('kaymakamlik')) {
+      return 'bg-lime-500/10 text-lime-400 border border-lime-500/20';
+    }
+    if (norm.includes('sayıştay') || norm.includes('sayistay')) {
+      return 'bg-pink-500/10 text-pink-400 border border-pink-500/20';
+    }
     return 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20';
   };
 
