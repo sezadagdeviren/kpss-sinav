@@ -96,8 +96,12 @@ function scanDir(currentDir, relativePath, results) {
           kategori = 'Genel';
         }
       } else {
-        // Klasik: Lisans/Ders/Yil/Soru_X.png veya AGS/Ders/Yil/...
-        if (parts.length === 4) {
+        // YENİ FORMAT: Lisans/Yıl/Ders/Soru_X.png (parts[1] dört haneli yıl)
+        // ESKİ FORMAT: Lisans/Ders/Yıl/Soru_X.png  (parts[1] ders adı)
+        if (parts.length === 4 && /^[0-9]{4}(-\d+)?$/.test(parts[1])) {
+          yil = parts[1];
+          kategori = parts[2];
+        } else if (parts.length === 4) {
           kategori = parts[1];
           yil = parts[2];
         } else if (parts.length === 3) {
