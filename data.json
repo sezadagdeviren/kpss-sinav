@@ -99712,5 +99712,965 @@
     "kategori": "Vatandaslik",
     "soru_resmi": "Ortaogretim/2024/Vatandaslik/soru_9.png",
     "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "1",
+    "dogru_cevap": "B",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_1.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "10",
+    "dogru_cevap": "D",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_10.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "11",
+    "dogru_cevap": "A",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_11.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "12",
+    "dogru_cevap": "D",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_12.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "13",
+    "dogru_cevap": "D",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_13.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "14",
+    "dogru_cevap": "E",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_14.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "15",
+    "dogru_cevap": "E",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_15.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "16",
+    "dogru_cevap": "C",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_16.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "17",
+    "dogru_cevap": "B",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_17.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "18",
+    "dogru_cevap": "B",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_18.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "2",
+    "dogru_cevap": "A",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_2.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "3",
+    "dogru_cevap": "C",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_3.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "4",
+    "dogru_cevap": "B",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_4.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "5",
+    "dogru_cevap": "B",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_5.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "6",
+    "dogru_cevap": "C",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_6.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "7",
+    "dogru_cevap": "B",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_7.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "8",
+    "dogru_cevap": "E",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_8.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "9",
+    "dogru_cevap": "C",
+    "kategori": "Cografya",
+    "soru_resmi": "Ortaogretim/2026/Cografya/soru_9.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "1",
+    "dogru_cevap": "B",
+    "kategori": "GuncelBilgiler",
+    "soru_resmi": "Ortaogretim/2026/GuncelBilgiler/soru_1.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "2",
+    "dogru_cevap": "C",
+    "kategori": "GuncelBilgiler",
+    "soru_resmi": "Ortaogretim/2026/GuncelBilgiler/soru_2.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "3",
+    "dogru_cevap": "B",
+    "kategori": "GuncelBilgiler",
+    "soru_resmi": "Ortaogretim/2026/GuncelBilgiler/soru_3.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "4",
+    "dogru_cevap": "D",
+    "kategori": "GuncelBilgiler",
+    "soru_resmi": "Ortaogretim/2026/GuncelBilgiler/soru_4.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "5",
+    "dogru_cevap": "D",
+    "kategori": "GuncelBilgiler",
+    "soru_resmi": "Ortaogretim/2026/GuncelBilgiler/soru_5.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "6",
+    "dogru_cevap": "A",
+    "kategori": "GuncelBilgiler",
+    "soru_resmi": "Ortaogretim/2026/GuncelBilgiler/soru_6.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "1",
+    "dogru_cevap": "C",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_1.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "10",
+    "dogru_cevap": "B",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_10.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "11",
+    "dogru_cevap": "E",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_11.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "12",
+    "dogru_cevap": "E",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_12.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "13",
+    "dogru_cevap": "D",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_13.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "14",
+    "dogru_cevap": "C",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_14.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "15",
+    "dogru_cevap": "D",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_15.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "16",
+    "dogru_cevap": "A",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_16.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "17",
+    "dogru_cevap": "C",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_17.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "18",
+    "dogru_cevap": "E",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_18.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "19",
+    "dogru_cevap": "C",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_19.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "2",
+    "dogru_cevap": "B",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_2.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "20",
+    "dogru_cevap": "A",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_20.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "21",
+    "dogru_cevap": "D",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_21.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "22",
+    "dogru_cevap": "C",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_22.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "23",
+    "dogru_cevap": "B",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_23.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "24",
+    "dogru_cevap": "D",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_24.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "25",
+    "dogru_cevap": "E",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_25.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "26",
+    "dogru_cevap": "E",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_26.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "27",
+    "dogru_cevap": "E",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_27.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "28",
+    "dogru_cevap": "C",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_28.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "29",
+    "dogru_cevap": "C",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_29.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "3",
+    "dogru_cevap": "A",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_3.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "30",
+    "dogru_cevap": "B",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_30.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "4",
+    "dogru_cevap": "D",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_4.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "5",
+    "dogru_cevap": "A",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_5.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "6",
+    "dogru_cevap": "D",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_6.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "7",
+    "dogru_cevap": "B",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_7.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "8",
+    "dogru_cevap": "D",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_8.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "9",
+    "dogru_cevap": "A",
+    "kategori": "Matematik",
+    "soru_resmi": "Ortaogretim/2026/Matematik/soru_9.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "1",
+    "dogru_cevap": "C",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_1.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "10",
+    "dogru_cevap": "C",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_10.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "11",
+    "dogru_cevap": "E",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_11.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "12",
+    "dogru_cevap": "E",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_12.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "13",
+    "dogru_cevap": "D",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_13.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "14",
+    "dogru_cevap": "A",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_14.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "15",
+    "dogru_cevap": "E",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_15.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "16",
+    "dogru_cevap": "B",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_16.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "17",
+    "dogru_cevap": "B",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_17.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "18",
+    "dogru_cevap": "D",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_18.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "19",
+    "dogru_cevap": "D",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_19.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "2",
+    "dogru_cevap": "A",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_2.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "20",
+    "dogru_cevap": "C",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_20.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "21",
+    "dogru_cevap": "D",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_21.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "22",
+    "dogru_cevap": "D",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_22.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "23",
+    "dogru_cevap": "C",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_23.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "24",
+    "dogru_cevap": "D",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_24.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "25",
+    "dogru_cevap": "E",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_25.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "26",
+    "dogru_cevap": "A",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_26.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "27",
+    "dogru_cevap": "A",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_27.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "3",
+    "dogru_cevap": "D",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_3.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "4",
+    "dogru_cevap": "A",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_4.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "5",
+    "dogru_cevap": "E",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_5.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "6",
+    "dogru_cevap": "B",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_6.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "7",
+    "dogru_cevap": "A",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_7.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "8",
+    "dogru_cevap": "E",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_8.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "9",
+    "dogru_cevap": "A",
+    "kategori": "Tarih",
+    "soru_resmi": "Ortaogretim/2026/Tarih/soru_9.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "1",
+    "dogru_cevap": "B",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_1.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "10",
+    "dogru_cevap": "D",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_10.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "11",
+    "dogru_cevap": "A",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_11.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "12",
+    "dogru_cevap": "B",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_12.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "13",
+    "dogru_cevap": "E",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_13.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "14",
+    "dogru_cevap": "A",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_14.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "15",
+    "dogru_cevap": "D",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_15.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "16",
+    "dogru_cevap": "C",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_16.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "17",
+    "dogru_cevap": "D",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_17.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "18",
+    "dogru_cevap": "C",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_18.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "19",
+    "dogru_cevap": "E",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_19.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "2",
+    "dogru_cevap": "C",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_2.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "20",
+    "dogru_cevap": "A",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_20.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "21",
+    "dogru_cevap": "B",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_21.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "22",
+    "dogru_cevap": "A",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_22.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "23",
+    "dogru_cevap": "C",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_23.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "24",
+    "dogru_cevap": "C",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_24.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "25",
+    "dogru_cevap": "B",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_25.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "26",
+    "dogru_cevap": "C",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_26.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "27",
+    "dogru_cevap": "D",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_27.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "28",
+    "dogru_cevap": "E",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_28.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "29",
+    "dogru_cevap": "D",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_29.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "3",
+    "dogru_cevap": "C",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_3.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "30",
+    "dogru_cevap": "A",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_30.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "4",
+    "dogru_cevap": "B",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_4.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "5",
+    "dogru_cevap": "E",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_5.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "6",
+    "dogru_cevap": "D",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_6.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "7",
+    "dogru_cevap": "A",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_7.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "8",
+    "dogru_cevap": "A",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_8.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "9",
+    "dogru_cevap": "D",
+    "kategori": "Turkce",
+    "soru_resmi": "Ortaogretim/2026/Turkce/soru_9.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "1",
+    "dogru_cevap": "A",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_1.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "2",
+    "dogru_cevap": "A",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_2.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "3",
+    "dogru_cevap": "E",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_3.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "4",
+    "dogru_cevap": "D",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_4.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "5",
+    "dogru_cevap": "A",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_5.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "6",
+    "dogru_cevap": "D",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_6.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "7",
+    "dogru_cevap": "B",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_7.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "8",
+    "dogru_cevap": "B",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_8.png",
+    "sinav_turu": "Ortaogretim"
+  },
+  {
+    "yil": "2026",
+    "soru_no": "9",
+    "dogru_cevap": "D",
+    "kategori": "Vatandaslik",
+    "soru_resmi": "Ortaogretim/2026/Vatandaslik/soru_9.png",
+    "sinav_turu": "Ortaogretim"
   }
 ]
